@@ -16,6 +16,7 @@ T sum(T first, Args... args)
     return first + sum(args...);
 }
 
+
 // Tests
 TEST(SumFunction, Integers)
 {
