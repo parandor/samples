@@ -11,7 +11,7 @@
                 // "-v", // Add this line for verbose output
                 "${file}",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}",
+                "${workspaceFolder}/bin/${fileBasenameNoExtension}", // Output to the bin directory
                 "-lgtest",
                 "-lgtest_main",
                 "-pthread"
