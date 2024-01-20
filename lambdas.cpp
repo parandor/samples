@@ -1,3 +1,8 @@
+/*
+ * Author: Peter Arandorenko
+ * Date: January 26, 2024
+ */
+
 #include <algorithm>
 #include <functional>
 #include <iostream>

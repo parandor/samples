@@ -1,3 +1,8 @@
+/*
+ * Author: Peter Arandorenko
+ * Date: January 26, 2024
+ */
+
 #ifndef ADD_VALUES_H
 #define ADD_VALUES_H
 

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Author: Peter Arandorenko
+# Date: January 26, 2024
+
 # Compile and run all .cpp files with main() in the tests directory
 
 for file in *.cpp; do
