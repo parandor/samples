@@ -12,9 +12,12 @@ Purpose of which is to use as a collection of code snippets that cover a broad l
 To configure VS Code with GCC, GDB, and WSL, follow this link: \
 `https://code.visualstudio.com/docs/cpp/config-wsl`
 
+To install dependencies, run:\
+`./install.sh`
+
 # Run
 
-To run this module in Linux, execute in CLI:\
+To execute this module in Linux, run:\
 `./run_all_tests.sh`
 
 # C++ Intermediate+ Level Skills
