@@ -26,7 +26,7 @@ To execute this module in Linux, run:\
 |-------------------------------------|--------------------------------------------------------------------------------------|
 | **Language Features**               | [Smart Pointers](smart_pointers.cpp) \| [Templates](templates.cpp) \| [Lambda Expressions](lambdas.cpp) \| [Function Pointers](function_pointers.cpp) \| [RAII](RAII.cpp) |
 | **Memory Management**               | [Memory Allocation Strategies](memory_allocation.cpp) \| [Custom Allocators](custom_allocators.cpp) \| [Memory Leaks Detection](memory_leak_detection.cpp) \| [Debugging](debugging.cpp) |
-| **Concurrency and Parallelism**     | std::thread, std::mutex, std::condition_variable, Parallel Algorithms, Atomic Types  |
+| **Concurrency and Parallelism**     | [std::thread](thread.cpp) \| std::mutex \| std::condition_variable \| Parallel Algorithms \| Atomic Types  |
 | **STL Mastery**                     | Advanced Usage of Containers (std::vector, std::map, etc.), Iterators, Algorithms    |
 | **Object-Oriented Design Patterns** | Factory, Observer, Strategy, Command, Decorator                                      |
 | **Advanced Templates**              | SFINAE (Substitution Failure Is Not An Error), Template Metaprogramming              |
