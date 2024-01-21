@@ -27,7 +27,7 @@ To run this module in Linux, execute in CLI:\
 | **STL Mastery**                     | Advanced Usage of Containers (std::vector, std::map, etc.), Iterators, Algorithms    |
 | **Object-Oriented Design Patterns** | Factory, Observer, Strategy, Command, Decorator                                      |
 | **Advanced Templates**              | SFINAE (Substitution Failure Is Not An Error), Template Metaprogramming              |
-| **File I/O**                        | std::ifstream, std::ofstream, Serialization, Binary File Handling                   |
+| **File I/O**                        | std::ifstream, std::ofstream, [Serialization](serialization.cpp), Binary File Handling                   |
 | **Network Programming**             | Socket Programming, Networking Libraries (Boost.Asio), REST APIs                      |
 | **Build Systems**                   | CMake, Make, Understanding of Build Tools and Dependency Management                 |
 | **Debugging Proficiency**           | GDB, Valgrind, AddressSanitizer, Profiling Tools                                     |

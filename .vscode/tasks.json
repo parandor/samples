@@ -14,7 +14,11 @@
                 "${workspaceFolder}/bin/${fileBasenameNoExtension}", // Output to the bin directory
                 "-lgtest",
                 "-lgtest_main",
-                "-pthread"
+                "-pthread",
+                "-I",
+                "${workspaceFolder}/cget/include/",
+                "-L",
+                "${workspaceFolder}/cget/lib/**"
             ],
             "options": {
                 "cwd": "${fileDirname}"

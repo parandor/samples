@@ -12,10 +12,11 @@ for file in *.cpp; do
     filename="${filename%.*}"
 
     # Compile the .cpp file
-    if g++ -fdiagnostics-color=always -g -std=c++17 -o bin/"$filename" "$file" -lgtest -lgtest_main -pthread; then #-v
+    if g++ -fdiagnostics-color=always -g -std=c++17 -o bin/"$filename" "$file" -lgtest -lgtest_main -pthread -I cget/include/ -L cget/lib/**; then #-v
         # Run the resulting executable if compilation succeeds
         bin/"$filename"
     else
         echo "Compilation failed for $file"
+        break
     fi
 done
