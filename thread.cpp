@@ -117,67 +117,99 @@ TEST(ConcurrencyTest, ParallelSortWithThread) {
     EXPECT_TRUE(std::is_sorted(data.begin(), data.end()));
 }
 
-// Test 5: Producer-Consumer Pattern with std::thread and std::condition_variable
-TEST(ConcurrencyTest, ProducerConsumerPattern) {
-    const int bufferSize = 10;
-    std::vector<int> buffer(bufferSize, 0);
+// Shared buffer between producer and consumer
+template <typename T>
+class SharedBuffer {
+public:
+    void push(const T& item) {
+        std::unique_lock<std::mutex> lock(mutex_);
+        buffer_.push(item);
+        lock.unlock();
+        condition_.notify_one();
+    }
 
-    std::mutex mutex;
-    std::condition_variable notEmpty, notFull;
+    T pop() {
+        std::unique_lock<std::mutex> lock(mutex_);
+        condition_.wait(lock, [this] { return !buffer_.empty(); });
 
+        T item = buffer_.front();
+        buffer_.pop();
+        return item;
+    }
+
+private:
+    std::queue<T> buffer_;
+    std::mutex mutex_;
+    std::condition_variable condition_;
+};
+
+// Test fixture for producer-consumer test
+class ProducerConsumerTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+        // Reset any shared resources or variables
+        sharedBuffer.clear();
+    }
+
+    SharedBuffer<int> sharedBuffer;
+};
+
+// Producer function
+void producer(SharedBuffer<int>& buffer, int id, int numItems) {
+    for (int i = 0; i < numItems; ++i) {
+        buffer.push(id * numItems + i);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));  // Simulate some work
+    }
+}
+
+// Consumer function
+void consumer(SharedBuffer<int>& buffer, std::vector<int>& results, int numItems) {
+    for (int i = 0; i < numItems; ++i) {
+        int item = buffer.pop();
+        results.push_back(item);
+        std::this_thread::sleep_for(std::chrono::milliseconds(20));  // Simulate some work
+    }
+}
+
+// Test producer-consumer interaction
+TEST_F(ProducerConsumerTest, ProducerConsumerInteraction) {
     const int numProducers = 2;
-    const int numConsumers = 2;
+    const int numConsumers = 3;
+    const int numItems = 5;
 
-    std::vector<std::thread> producers;
-    std::vector<std::thread> consumers;
+    std::vector<std::thread> producerThreads;
+    std::vector<std::thread> consumerThreads;
+    std::vector<int> results;
 
-    // Producer function
-    auto producer = [&buffer, &mutex, &notEmpty, &notFull](int id) {
-        for (int i = 0; i < 10; ++i) {
-            {
-                std::unique_lock<std::mutex> lock(mutex);
-                notFull.wait(lock, [&buffer] { return buffer.size() < bufferSize; });
-                buffer.push_back(id * 10 + i);
-            }
-            notEmpty.notify_one();
-        }
-    };
-
-    // Consumer function
-    auto consumer = [&buffer, &mutex, &notEmpty, &notFull](int id) {
-        for (int i = 0; i < 5; ++i) {
-            {
-                std::unique_lock<std::mutex> lock(mutex);
-                notEmpty.wait(lock, [&buffer] { return !buffer.empty(); });
-                int value = buffer.back();
-                buffer.pop_back();
-            }
-            notFull.notify_one();
-        }
-    };
-
-    // Create and launch producer threads
+    // Create producer threads
     for (int i = 0; i < numProducers; ++i) {
-        producers.emplace_back(producer, i);
+        producerThreads.emplace_back(producer, std::ref(sharedBuffer), i, numItems);
     }
 
-    // Create and launch consumer threads
+    // Create consumer threads
     for (int i = 0; i < numConsumers; ++i) {
-        consumers.emplace_back(consumer, i);
+        consumerThreads.emplace_back(consumer, std::ref(sharedBuffer), std::ref(results), numItems);
     }
 
-    // Wait for all producer threads to finish
-    for (auto& producerThread : producers) {
-        producerThread.join();
+    // Join producer threads
+    for (auto& thread : producerThreads) {
+        thread.join();
     }
 
-    // Wait for all consumer threads to finish
-    for (auto& consumerThread : consumers) {
-        consumerThread.join();
+    // Notify consumers that no more items will be produced
+    sharedBuffer.push(-1);  // Using a sentinel value (-1) to signal end of production
+
+    // Join consumer threads
+    for (auto& thread : consumerThreads) {
+        thread.join();
     }
 
-    // Check if the buffer is empty at the end
-    EXPECT_TRUE(buffer.empty());
+    // Check if all expected items are present in the results
+    std::sort(results.begin(), results.end());
+    std::vector<int> expectedResults(numProducers * numItems);
+    std::iota(expectedResults.begin(), expectedResults.end(), 0);
+
+    ASSERT_EQ(results, expectedResults);
 }
 
 int main(int argc, char** argv) {
