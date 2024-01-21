@@ -25,7 +25,7 @@ To execute this module in Linux, run:\
 | Category                            | Skills                                                                               |
 |-------------------------------------|--------------------------------------------------------------------------------------|
 | **Language Features**               | [Smart Pointers](smart_pointers.cpp) \| [Templates](templates.cpp) \| [Lambda Expressions](lambdas.cpp) \| [Function Pointers](function_pointers.cpp) \| [RAII](RAII.cpp) |
-| **Memory Management**               | [Memory Allocation Strategies](memory_allocation.cpp) \| [Custom Allocators](custom_allocators.cpp) \| Memory Leaks Detection \| Debugging |
+| **Memory Management**               | [Memory Allocation Strategies](memory_allocation.cpp) \| [Custom Allocators](custom_allocators.cpp) \| [Memory Leaks Detection](memory_leak_detection.cpp) \| Debugging |
 | **Concurrency and Parallelism**     | std::thread, std::mutex, std::condition_variable, Parallel Algorithms, Atomic Types  |
 | **STL Mastery**                     | Advanced Usage of Containers (std::vector, std::map, etc.), Iterators, Algorithms    |
 | **Object-Oriented Design Patterns** | Factory, Observer, Strategy, Command, Decorator                                      |
