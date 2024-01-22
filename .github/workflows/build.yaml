@@ -13,12 +13,11 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v2
 
+    - name: Install Permissions
+      run: chmod +x install.sh
+
     - name: Install Dependencies
-      run: |
-        ls -la               # Print directory contents
-        chmod +x install.sh
-        ./install.sh
-      working-directory: ${{ github.workspace }}
+      run: ./install.sh
 
     - name: Run Tests
       run: python3 test_runner.py
