@@ -13,8 +13,7 @@ Purpose of which is to use as a collection of code snippets that cover a broad l
 
 # Installation
 
-To configure VS Code with GCC, GDB, and WSL, follow this link: \
-`https://code.visualstudio.com/docs/cpp/config-wsl`
+To configure VS Code with GCC, GDB, and WSL, follow this [link](https://code.visualstudio.com/docs/cpp/config-wsl)
 
 To install dependencies, run:\
 `./install.sh`
@@ -48,3 +47,16 @@ To execute this module in Linux, run:\
 | **Agile and Scrum Methodologies**   | Sprint Planning, Daily Stand-ups, Sprint Review, Retrospective                        |
 | **Communication Skills**            | Effectively Communicating Technical Concepts, Team Collaboration                       |
 | **Mentoring and Leadership**        | Guiding Junior Developers, Code Reviews, Knowledge Sharing, Technical Leadership    |
+
+# GitHub
+
+The following is a list of GitHub workflows supported:
+
+| Workflow                            | Description                                                                          |
+|-------------------------------------|--------------------------------------------------------------------------------------|
+|[build.yaml](\.github/workflows/build.yaml) | Installs permissions, dependencies, builds, and runs all tests.|
+
+## Self-Hosted Runners
+
+Setup self-hosted runners by following this [link](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/adding-self-hosted-runners)
+
