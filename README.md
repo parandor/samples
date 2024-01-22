@@ -1,3 +1,7 @@
+---
+cpp: "tests/cpp/"
+---
+
 # Samples
 Language samples.
 
@@ -18,7 +22,7 @@ To install dependencies, run:\
 # Run
 
 To execute this module in Linux, run:\
-`./run_all_tests.sh`
+`python3 test_runner.py`
 
 # C++ Intermediate+ Level Skills
 
