@@ -143,23 +143,18 @@ public:
     T pop()
     {
         std::unique_lock<std::mutex> lock(mutex_);
-        if (!condition_.wait_for(lock, std::chrono::seconds(1), [this]
-                                 { return !buffer_.empty(); }))
-        {
-            // Timeout occurred and buffer is still empty, signal end of production
-            // Return the sentinel value (-1) to signal end of production
-            return T{-1}; // You can return a default-constructed value or handle the timeout accordingly
-        }
-        if (buffer_.empty())
-        {
-            return T{-1};
-        }
+        condition_.wait(lock, [this]
+                        { return !buffer_.empty(); });
         T item = buffer_.front();
         buffer_.pop();
         return item;
     }
 
-    size_t size() { return buffer_.size(); }
+    size_t size() const
+    {
+        std::unique_lock<std::mutex> lock(mutex_);
+        return buffer_.size();
+    }
 
     void clear()
     {
@@ -172,7 +167,7 @@ public:
 
 private:
     std::queue<T> buffer_;
-    std::mutex mutex_;
+    mutable std::mutex mutex_;
     std::condition_variable condition_;
 };
 
@@ -184,10 +179,9 @@ protected:
         // Reset any shared resources or variables
         sharedBuffer.clear();
     }
-    // Explicitly declare destructor
-    virtual ~ProducerConsumerTest() = default;
 
     SharedBuffer<int> sharedBuffer;
+    const int numItems = 10;
 };
 
 class Producer
@@ -200,7 +194,7 @@ public:
         for (int i = 0; i < numItems_; ++i)
         {
             buffer_.push(id_ * numItems_ + i);
-            std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Simulate some work
+            std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Simulate some work
         }
     }
 
@@ -218,19 +212,18 @@ public:
 
     void operator()()
     {
-        for (int i = 0; i < numItems_; ++i)
+        while (true)
         {
-            if (buffer_.size() <= 0)
-            {
-                continue;
-            }
             int item = buffer_.pop();
+
             // Check for the sentinel value (-1) to signal end of production
-            if (item != -1)
+            if (item == -1)
             {
-                results_.push_back(item);
+                break;
             }
-            std::this_thread::sleep_for(std::chrono::milliseconds(1)); // Simulate some work
+
+            results_.push_back(item);
+            std::this_thread::sleep_for(std::chrono::milliseconds(5)); // Simulate some work
         }
     }
 
@@ -240,11 +233,17 @@ private:
     int numItems_;
 };
 
+// The Producer object is instantiated and its overloaded operator() method is executed
+// when the std::thread is created. The std::thread constructor takes the Producer object
+// as a parameter and internally calls its operator(). This creates a new thread of execution
+// that runs the operator() method.
+//
+// So, when you add a Producer object to the vector of threads, a new thread is spawned,
+// and it starts executing the operator() method of the Producer object in a separate thread.
 TEST_F(ProducerConsumerTest, ProducerConsumerInteraction)
 {
     const int numProducers = 2;
     const int numConsumers = 3;
-    const int numItems = 5;
 
     std::vector<std::thread> producerThreads;
     std::vector<std::thread> consumerThreads;
@@ -268,6 +267,12 @@ TEST_F(ProducerConsumerTest, ProducerConsumerInteraction)
         thread.join();
     }
 
+    // Notify consumers that no more items will be produced
+    for (int i = 0; i < numConsumers; ++i)
+    {
+        sharedBuffer.push(-1);
+    }
+
     // Join consumer threads
     for (auto &thread : consumerThreads)
     {
@@ -276,8 +281,11 @@ TEST_F(ProducerConsumerTest, ProducerConsumerInteraction)
 
     // Check if all expected items are present in the results
     std::sort(results.begin(), results.end());
-    std::vector<int> expectedResults(numProducers * numItems);
-    std::iota(expectedResults.begin(), expectedResults.end(), 0);
+    std::vector<int> expectedResults;
+    for (int i = 0; i < numProducers * numItems; ++i)
+    {
+        expectedResults.push_back(i);
+    }
 
     ASSERT_EQ(results, expectedResults);
 }
