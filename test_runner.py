@@ -19,14 +19,33 @@ class TestRunner:
         test_name = os.path.splitext(test_file)[0]
         output_binary = os.path.join(self.output_directory, test_name)
 
+        self.compile_and_check(test_file, output_binary)
+        self.run_and_check(output_binary)
+
+    def compile_and_check(self, test_file, output_binary):
         compile_command = self.get_compile_command(test_file, output_binary)
-        subprocess.run(compile_command, shell=True, check=True)
+        compile_result = subprocess.run(compile_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
+        if compile_result.returncode != 0:
+            # Compilation failed
+            print(f"Compilation failed for {test_file}")
+            print(compile_result.stdout)
+            print(compile_result.stderr)
+            exit(1)  # Exit with a non-zero status code
+
+    def run_and_check(self, output_binary):
         run_command = self.get_run_command(output_binary)
-        result = subprocess.run(run_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        run_result = subprocess.run(run_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-        print(result.stdout)
-        print(result.stderr)
+        print(run_result.stdout)
+        print(run_result.stderr)
+
+        if run_result.returncode != 0:
+            # Run failed
+            print(f"Run failed for {output_binary}")
+            print(run_result.stdout)
+            print(run_result.stderr)
+            exit(1)  # Exit with a non-zero status code
 
     def get_compile_command(self, test_file, output_binary):
         # Customize compile commands for different languages
