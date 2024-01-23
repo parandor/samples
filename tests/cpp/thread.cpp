@@ -150,6 +150,10 @@ public:
             // Return the sentinel value (-1) to signal end of production
             return T{-1}; // You can return a default-constructed value or handle the timeout accordingly
         }
+        if (buffer_.empty())
+        {
+            return T{-1};
+        }
         T item = buffer_.front();
         buffer_.pop();
         return item;
@@ -216,6 +220,10 @@ public:
     {
         for (int i = 0; i < numItems_; ++i)
         {
+            if (buffer_.size() <= 0)
+            {
+                continue;
+            }
             int item = buffer_.pop();
             // Check for the sentinel value (-1) to signal end of production
             if (item != -1)
