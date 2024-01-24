@@ -1,8 +1,10 @@
-sudo apt-get update
-sudo apt-get -y install g++ git
-sudo apt-get -y install python3
-sudo apt-get -y install python3-pip
-sudo apt-get -y install libgtest-dev
+#!/bin/bash
+
+sudo apt update
+sudo apt -y install g++ git
+sudo apt -y install python3
+sudo apt -y install python3-pip
+sudo apt -y install libgtest-dev
 # todo: uncomment after issue resolved in CI
 # Serialization libraries (JSON for string, boost for binary)
 # pip install cget
