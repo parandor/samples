@@ -30,6 +30,7 @@ class TestRunner:
 
     def compile_and_check(self, test_file, output_binary):
         compile_command = self.get_compile_command(test_file, output_binary)
+        print(f"Compile command: {compile_command}")
         compile_result = subprocess.run(compile_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
         if compile_result.returncode != 0:
