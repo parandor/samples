@@ -26,6 +26,7 @@ jobs:
         echo 'export PATH=$PATH:/usr/local/go/bin' >> $HOME/.bashrc
         source $HOME/.bashrc
         cat $HOME/.bashrc
+        echo $PATH
         # fi
 
     - name: Run Tests
