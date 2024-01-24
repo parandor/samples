@@ -26,11 +26,11 @@ jobs:
         #cget install https://github.com/nlohmann/json/archive/refs/tags/v3.11.3.tar.gz
         #cget install https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.gz
 
-        # Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.21.6
-        id: go
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.21.6
+      id: go
 
     - name: Display Installed Versions
       run: |
