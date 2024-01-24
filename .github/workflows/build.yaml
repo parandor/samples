@@ -21,11 +21,11 @@ jobs:
       run: ./install.sh
 
     - name: Update PATH
-          run: |
-            if [[ ":$PATH:" != *":/usr/local/go/bin:"* ]]; then
-              echo 'export PATH=$PATH:/usr/local/go/bin' >> $HOME/.bashrc
-              source $HOME/.bashrc
-            fi
+      run: |
+        if [[ ":$PATH:" != *":/usr/local/go/bin:"* ]]; then
+          echo 'export PATH=$PATH:/usr/local/go/bin' >> $HOME/.bashrc
+          source $HOME/.bashrc
+        fi
 
     - name: Run Tests
       run: python3 test_runner.py
