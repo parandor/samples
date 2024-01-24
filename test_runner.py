@@ -62,7 +62,7 @@ class TestRunner:
         if self.language == "cpp":
             return f"g++ -fdiagnostics-color=always -g -std=c++17 {os.path.join(self.test_directory, test_file)} -o {output_binary} -lgtest -lgtest_main -pthread -I cget/include/ -L cget/lib/**"
         elif self.language == "go":
-            return f"go test -v -flush {test_file}"
+            return f"go test -v {test_file}"
         # Add more languages as needed
         else:
             raise ValueError(f"Unsupported language: {self.language}")
@@ -72,6 +72,7 @@ class TestRunner:
         if self.language == "cpp":
             return output_binary
         elif self.language == "go":
+            # Go tests do not produce standalone binaries, 'go build' does. Main application runs 'go build'. 
             return ""
         # Add more languages as needed
         else:

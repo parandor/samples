@@ -16,6 +16,10 @@ To install dependencies, run:
 ./install.sh
 ```
 
+## Go
+
+Go development tutorial can be found [here](https://code.visualstudio.com/docs/languages/go)
+
 # Run
 
 To execute this module in Linux, run:

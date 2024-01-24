@@ -1,8 +1,6 @@
-# https://code.visualstudio.com/docs/languages/go
-
 | Category                 | Beginner Skills                                          | Intermediate Skills                                      | Senior Skills                                              |
 |--------------------------|----------------------------------------------------------|----------------------------------------------------------|------------------------------------------------------------|
-| **Language Proficiency** | Variables, Functions, Basic Data Types                   | Interfaces, Structs, Error Handling                       | Goroutines, Channels, Custom Types                          |
+| **Language Proficiency** | [Variables](samples/variables_test.go) \| Functions, Basic Data Types                   | Interfaces, Structs, Error Handling                       | Goroutines, Channels, Custom Types                          |
 | **Concurrency**          | Basic Goroutine Creation, Simple Channel Usage            | Worker Pools, Mutexes, Wait Groups                        | Advanced Concurrency Patterns, Context Handling             |
 | **Error Handling**       | Basic Error Checks, Returning Errors                     | Custom Error Types, Error Wrapping                        | Comprehensive Error Management, Panic and Recover           |
 | **Package Management**   | Using `go mod init`, `go get`                            | Versioning with Go Modules, Dependency Resolution        | Private Repositories, Dependency Locking                    |
