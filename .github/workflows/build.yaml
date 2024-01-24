@@ -14,20 +14,32 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    - name: Install Permissions
-      run: chmod +x install.sh
-
     - name: Install Dependencies
-      run: ./install.sh
-
-    - name: Update PATH
       run: |
-        # if [[ ":$PATH:" != *":/usr/local/go/bin:"* ]]; then
-        echo 'export PATH=$PATH:/usr/local/go/bin' >> $HOME/.bashrc
-        source $HOME/.bashrc
-        cat $HOME/.bashrc
-        echo $PATH
-        # fi
+        sudo apt-get update
+        sudo apt-get -y install g++ git python3 python3-pip libgtest-dev
+
+        # Install Python packages using pip
+        # pip3 install cget
+
+        # Install dependencies using cget
+        #cget install https://github.com/nlohmann/json/archive/refs/tags/v3.11.3.tar.gz
+        #cget install https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.gz
+
+        # Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.21.6
+        id: go
+
+    - name: Display Installed Versions
+      run: |
+        g++ --version
+        git --version
+        python3 --version
+        pip3 --version
+        #cget --version
+        go version
 
     - name: Run Tests
       run: python3 test_runner.py

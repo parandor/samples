@@ -1,9 +1,9 @@
 #!/bin/bash
-apt-get update
-apt-get -y install g++ git
-apt-get -y install python3
-apt-get -y install python3-pip
-apt-get -y install libgtest-dev
+# apt-get update
+# apt-get -y install g++ git
+# apt-get -y install python3
+# apt-get -y install python3-pip
+# apt-get -y install libgtest-dev
 # todo: uncomment after issue resolved in CI
 # Serialization libraries (JSON for string, boost for binary)
 # pip install cget
@@ -11,10 +11,10 @@ apt-get -y install libgtest-dev
 # cget install https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.gz
 
 # Install Go
-apt-get -y upgrade 
-FILENAME=go1.21.6.linux-amd64.tar.gz
-wget https://go.dev/dl/$FILENAME 
-# Remove old directory if exists, and then untar
-sudo rm -rf /usr/local/go && sudo tar -xvf $FILENAME -C /usr/local
-# echo 'export PATH=$PATH:/usr/local/go/bin' | sudo tee -a /etc/profile && source /etc/profile
-rm $FILENAME
+# apt-get -y upgrade 
+# FILENAME=go1.21.6.linux-amd64.tar.gz
+# wget https://go.dev/dl/$FILENAME 
+# # Remove old directory if exists, and then untar
+# sudo rm -rf /usr/local/go && sudo tar -xvf $FILENAME -C /usr/local
+# # echo 'export PATH=$PATH:/usr/local/go/bin' | sudo tee -a /etc/profile && source /etc/profile
+# rm $FILENAME
