@@ -7,7 +7,7 @@ import (
 func TestIntegerVariable(t *testing.T) {
 	// Declare an integer variable
 	var number = 42
-
+ as
 	// Assert the value of the variable
 	if number != 42 {
 		t.Errorf("Expected the value of 'number' to be 42, but got %d", number)
