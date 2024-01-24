@@ -2,13 +2,13 @@
 
 | Category                            | Skills                                                                               |
 |-------------------------------------|--------------------------------------------------------------------------------------|
-| **Language Features**               | [Smart Pointers](tests/cpp/smart_pointers.cpp) \| [Templates](tests/cpp/templates.cpp) \| [Lambda Expressions](tests/cpp/lambdas.cpp) \| [Function Pointers](tests/cpp/function_pointers.cpp) \| [RAII](tests/cpp/RAII.cpp) |
-| **Memory Management**               | [Memory Allocation Strategies](tests/cpp/memory_allocation.cpp) \| [Custom Allocators](tests/cpp/custom_allocators.cpp) \| [Memory Leaks Detection](tests/cpp/memory_leak_detection.cpp) \| [Debugging](tests/cpp/debugging.cpp) |
-| **Concurrency and Parallelism**     | [std::thread](tests/cpp/thread.cpp) \| [std::mutex](tests/cpp/mutex.cpp) \| [std::condition_variable](tests/cpp/condition_variable.cpp) \| [Parallel Algorithms](tests/cpp/parallel_algorithms.cpp) \| Atomic Types  |
+| **Language Features**               | [Smart Pointers](smart_pointers.cpp) \| [Templates](templates.cpp) \| [Lambda Expressions](lambdas.cpp) \| [Function Pointers](function_pointers.cpp) \| [RAII](RAII.cpp) |
+| **Memory Management**               | [Memory Allocation Strategies](memory_allocation.cpp) \| [Custom Allocators](custom_allocators.cpp) \| [Memory Leaks Detection](memory_leak_detection.cpp) \| [Debugging](debugging.cpp) |
+| **Concurrency and Parallelism**     | [std::thread](thread.cpp) \| [std::mutex](mutex.cpp) \| [std::condition_variable](condition_variable.cpp) \| [Parallel Algorithms](parallel_algorithms.cpp) \| Atomic Types  |
 | **STL Mastery**                     | Advanced Usage of Containers (std::vector, std::map, etc.), Iterators, Algorithms    |
 | **Object-Oriented Design Patterns** | Factory, Observer, Strategy, Command, Decorator                                      |
 | **Advanced Templates**              | SFINAE (Substitution Failure Is Not An Error), Template Metaprogramming              |
-| **File I/O**                        | std::ifstream, std::ofstream, [Serialization](tests/cpp/serialization.cpp), Binary File Handling                   |
+| **File I/O**                        | std::ifstream, std::ofstream, [Serialization](serialization.cpp), Binary File Handling                   |
 | **Network Programming**             | Socket Programming, Networking Libraries (Boost.Asio), REST APIs                      |
 | **Build Systems**                   | CMake, Make, Understanding of Build Tools and Dependency Management                 |
 | **Debugging Proficiency**           | GDB, Valgrind, AddressSanitizer, Profiling Tools                                     |
