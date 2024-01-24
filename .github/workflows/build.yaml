@@ -9,6 +9,9 @@ jobs:
   run-scripts:
     runs-on: self-hosted
 
+    env:
+      HOME: /home/peter
+
     steps:
 
     - name: Checkout Repository
