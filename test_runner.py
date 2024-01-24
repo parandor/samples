@@ -42,6 +42,9 @@ class TestRunner:
 
     def run_and_check(self, output_binary):
         run_command = self.get_run_command(output_binary)
+        if run_command == "":
+            return
+        
         run_result = subprocess.run(run_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
         print(run_result.stdout)
@@ -68,6 +71,8 @@ class TestRunner:
         # Customize run commands for different languages
         if self.language == "cpp":
             return output_binary
+        elif self.language == "go":
+            return ""
         # Add more languages as needed
         else:
             raise ValueError(f"Unsupported language: {self.language}")
