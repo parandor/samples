@@ -52,7 +52,8 @@ class TestRunner:
         # Customize compile commands for different languages
         if self.language == "cpp":
             return f"g++ -fdiagnostics-color=always -g -std=c++17 {os.path.join(self.test_directory, test_file)} -o {output_binary} -lgtest -lgtest_main -pthread -I cget/include/ -L cget/lib/**"
-                
+        elif self.language == "go":
+            return f"go test ./..."
         # Add more languages as needed
         else:
             raise ValueError(f"Unsupported language: {self.language}")
@@ -81,6 +82,9 @@ if __name__ == "__main__":
     # Example usage for C++ tests
     cpp_test_runner = TestRunner(test_directory="tests", language="cpp", blacklist=blacklist)
     cpp_test_runner.run_tests()
+
+    go_test_runner = TestRunner(test_directory="tests", language="go")
+    go_test_runner.run_tests()
 
     # Example usage for other language tests
     # Modify the language and test_directory accordingly

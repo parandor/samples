@@ -28,8 +28,7 @@ python3 test_runner.py
 Intermediate+ Level Skills
 1. [C++](tests/cpp/README.md) 
 2. Python
-3. Go
-
+3. [Go](tests/go/README.md)
 
 # GitHub
 

@@ -1,0 +1,21 @@
+# https://code.visualstudio.com/docs/languages/go
+
+| Category                 | Beginner Skills                                          | Intermediate Skills                                      | Senior Skills                                              |
+|--------------------------|----------------------------------------------------------|----------------------------------------------------------|------------------------------------------------------------|
+| **Language Proficiency** | Variables, Functions, Basic Data Types                   | Interfaces, Structs, Error Handling                       | Goroutines, Channels, Custom Types                          |
+| **Concurrency**          | Basic Goroutine Creation, Simple Channel Usage            | Worker Pools, Mutexes, Wait Groups                        | Advanced Concurrency Patterns, Context Handling             |
+| **Error Handling**       | Basic Error Checks, Returning Errors                     | Custom Error Types, Error Wrapping                        | Comprehensive Error Management, Panic and Recover           |
+| **Package Management**   | Using `go mod init`, `go get`                            | Versioning with Go Modules, Dependency Resolution        | Private Repositories, Dependency Locking                    |
+| **Web Development**      | Basic HTTP Server, Handling Requests                     | Middleware Implementation, Routing in Web Frameworks     | RESTful API Design, Authentication and Authorization       |
+| **Database Integration** | Basic CRUD Operations with `database/sql`                 | Database Abstraction Layers, Connection Pooling          | Query Optimization, Transaction Management                 |
+| **Networking**           | Creating a Basic HTTP Client, Understanding TCP/IP        | Building RESTful Clients, Working with WebSockets         | Implementing gRPC, Load Balancing Strategies                |
+| **Testing**              | Writing Basic Unit Tests, Using `testing` Package         | Table-Driven Tests, Mocking in Tests                     | Behavior-Driven Development (BDD), Performance Testing      |
+| **Code Organization**    | Basic Package Structure, File Organization               | Modular Project Structure, Code Separation               | Microservices Architecture, Domain-Driven Design           |
+| **Performance Tuning**   | Profiling with `pprof`, Basic Optimization Techniques    | Analyzing CPU and Memory Profiling Results               | Cache Optimization, Distributed Systems Performance Tuning |
+| **Security**             | Handling Passwords Securely, Basic Input Validation       | HTTPS Implementation, Secure Coding Practices           | Threat Modeling, Secure API Design                          |
+| **Build and Deployment**  | Building and Running Simple Go Programs                  | Creating Go Binaries, Cross-Compiling                    | Container Orchestration (e.g., Kubernetes), CI/CD Pipelines |
+| **Containerization**     | Understanding Docker Basics, Building Docker Images       | Docker Compose for Development, Multi-Stage Builds      | Kubernetes Deployment, Container Security Best Practices    |
+| **Logging and Monitoring**| Basic Logging with `log` Package, Simple Metrics          | Structured Logging, Prometheus Integration               | Centralized Logging Systems, Distributed Tracing           |
+| **Documentation**        | Adding Comments to Code, Basic README Files               | Godoc Usage, Markdown Documentation                      | Documenting APIs with OpenAPI, Extensive Code Documentation  |
+| **Code Review**          | Participating in Code Reviews, Addressing Feedback        | Enforcing Code Styles with Linters, Automated Checks    | Setting Code Review Guidelines, Mentorship in Code Reviews  |
+| **Open Source Contribution**| Forking Repositories, Creating Issues                   | Submitting Pull Requests, Collaborating with Maintainers | Initiating and Leading Open Source Projects, Code Ownership  |
