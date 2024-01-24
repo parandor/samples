@@ -240,55 +240,55 @@ private:
 //
 // So, when you add a Producer object to the vector of threads, a new thread is spawned,
 // and it starts executing the operator() method of the Producer object in a separate thread.
-// TEST_F(ProducerConsumerTest, ProducerConsumerInteraction)
-// {
-//     const int numProducers = 2;
-//     const int numConsumers = 3;
+TEST_F(ProducerConsumerTest, ProducerConsumerInteraction)
+{
+    const int numProducers = 2;
+    const int numConsumers = 3;
 
-//     std::vector<std::thread> producerThreads;
-//     std::vector<std::thread> consumerThreads;
-//     std::vector<int> results;
+    std::vector<std::thread> producerThreads;
+    std::vector<std::thread> consumerThreads;
+    std::vector<int> results;
 
-//     // Create producer threads
-//     for (int i = 0; i < numProducers; ++i)
-//     {
-//         producerThreads.emplace_back(Producer(sharedBuffer, i, numItems));
-//     }
+    // Create producer threads
+    for (int i = 0; i < numProducers; ++i)
+    {
+        producerThreads.emplace_back(Producer(sharedBuffer, i, numItems));
+    }
 
-//     // Create consumer threads
-//     for (int i = 0; i < numConsumers; ++i)
-//     {
-//         consumerThreads.emplace_back(Consumer(sharedBuffer, results, numItems));
-//     }
+    // Create consumer threads
+    for (int i = 0; i < numConsumers; ++i)
+    {
+        consumerThreads.emplace_back(Consumer(sharedBuffer, results, numItems));
+    }
 
-//     // Join producer threads
-//     for (auto &thread : producerThreads)
-//     {
-//         thread.join();
-//     }
+    // Join producer threads
+    for (auto &thread : producerThreads)
+    {
+        thread.join();
+    }
 
-//     // Notify consumers that no more items will be produced
-//     for (int i = 0; i < numConsumers; ++i)
-//     {
-//         sharedBuffer.push(-1);
-//     }
+    // Notify consumers that no more items will be produced
+    for (int i = 0; i < numConsumers; ++i)
+    {
+        sharedBuffer.push(-1);
+    }
 
-//     // Join consumer threads
-//     for (auto &thread : consumerThreads)
-//     {
-//         thread.join();
-//     }
+    // Join consumer threads
+    for (auto &thread : consumerThreads)
+    {
+        thread.join();
+    }
 
-//     // Check if all expected items are present in the results
-//     std::sort(results.begin(), results.end());
-//     std::vector<int> expectedResults;
-//     for (int i = 0; i < numProducers * numItems; ++i)
-//     {
-//         expectedResults.push_back(i);
-//     }
+    // Check if all expected items are present in the results
+    std::sort(results.begin(), results.end());
+    std::vector<int> expectedResults;
+    for (int i = 0; i < numProducers * numItems; ++i)
+    {
+        expectedResults.push_back(i);
+    }
 
-//     ASSERT_EQ(results, expectedResults);
-// }
+    ASSERT_EQ(results, expectedResults);
+}
 
 int main(int argc, char **argv)
 {
