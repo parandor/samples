@@ -60,7 +60,8 @@ The following is a list of GitHub workflows supported:
 
 1. Add self-hosted runners by following this [link](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/adding-self-hosted-runners)
 
-2. Configure the self-hosted runner application as a service to start on boot [here](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/configuring-the-self-hosted-runner-application-as-a-service)
+2. Configure the self-hosted runner application as a service to start on boot [here](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/configuring-the-self-hosted-runner-application-as-a-service)\
+`Note: handle the User used to start the self-hosted runner applications. The user may be set in /etc/systemd/system/actions.runner.<githubuser>-<repo>.<host>.service`
 
 3. To find the service name in the list of running services on Linux systems you can use the systemctl command:
     ```
