@@ -111,8 +111,5 @@ TEST(SmartPointersTest, WeakPtrCyclicReferenceTest)
 int main(int argc, char **argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
-
-    std::cout << "Hello world!" << std::endl;
-
     return RUN_ALL_TESTS();
 }

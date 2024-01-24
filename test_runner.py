@@ -7,7 +7,7 @@ import subprocess
 class TestRunner:
     def __init__(self, test_directory, output_directory="bin", language="cpp", blacklist=None):
         self.test_directory = os.path.join(test_directory, language)
-        print(f"Test directory: {self.test_directory}")
+        print(f"Test path: {self.test_directory}")
         self.output_directory = os.path.join(output_directory, language)
         self.language = language.lower()
         self.blacklist = blacklist or []
@@ -85,7 +85,7 @@ class TestRunner:
             if test_file in self.blacklist:
                 print(f"Skipping test (blacklisted): {test_file}")
                 continue
-
+            print(f"")
             print(f"Running test: {test_file}")
             self.compile_and_run_test(test_file)
 
