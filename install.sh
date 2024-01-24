@@ -2,7 +2,7 @@
 apt-get update
 apt-get -y upgrade 
 apt-get -y install g++ git python3 python3-pip libgtest-dev
-# todo: uncomment after issue resolved in CI
+
 # Serialization libraries (JSON for string, boost for binary)
 pip install cget
 cget install https://github.com/nlohmann/json/archive/refs/tags/v3.11.3.tar.gz

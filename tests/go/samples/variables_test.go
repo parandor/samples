@@ -2,6 +2,7 @@ package samples
 
 import (
 	"testing"
+	"reflect"
 )
 
 func TestIntegerVariable(t *testing.T) {
@@ -81,4 +82,29 @@ func TestArraySliceVariable(t *testing.T) {
 	if len(slicedNumbers) != 2 {
 		t.Errorf("Expected the length of 'slicedNumbers' slice to be 2, but got %d", len(slicedNumbers))
 	}
+}
+
+// RemoveDuplicates removes duplicate elements from a slice of integers.
+func RemoveDuplicates(nums []int) []int {
+    uniqueMap := make(map[int]bool)
+    result := []int{}
+
+    for _, num := range nums {
+        if !uniqueMap[num] {
+            uniqueMap[num] = true
+            result = append(result, num)
+        }
+    }
+
+    return result
+}
+
+func TestRemoveDuplicates(t *testing.T) {
+    nums := []int{1, 2, 2, 3, 4, 4, 5, 5, 5}
+    result := RemoveDuplicates(nums)
+    expected := []int{1, 2, 3, 4, 5}
+
+    if !reflect.DeepEqual(result, expected) {
+        t.Errorf("RemoveDuplicates([1, 2, 2, 3, 4, 4, 5, 5, 5]) = %v; want %v", result, expected)
+    }
 }
