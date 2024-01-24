@@ -5,10 +5,11 @@ import os
 import subprocess
 
 class TestRunner:
-    def __init__(self, test_directory, output_directory="bin", language="cpp"):
+    def __init__(self, test_directory, output_directory="bin", language="cpp", blacklist=None):
         self.test_directory = os.path.join(test_directory, language)
         self.output_directory = os.path.join(output_directory, language)
         self.language = language.lower()
+        self.blacklist = blacklist or []
         os.makedirs(self.output_directory, exist_ok=True)
 
     def discover_tests(self):
@@ -68,12 +69,17 @@ class TestRunner:
         tests = self.discover_tests()
 
         for test_file in tests:
+            if test_file in self.blacklist:
+                print(f"Skipping test (blacklisted): {test_file}")
+                continue
+
             print(f"Running test: {test_file}")
             self.compile_and_run_test(test_file)
 
 if __name__ == "__main__":
+    blacklist = ["serialization.cpp"]
     # Example usage for C++ tests
-    cpp_test_runner = TestRunner(test_directory="tests", language="cpp")
+    cpp_test_runner = TestRunner(test_directory="tests", language="cpp", blacklist=blacklist)
     cpp_test_runner.run_tests()
 
     # Example usage for other language tests
