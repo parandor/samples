@@ -1,7 +1,7 @@
 #!/bin/bash
 
-apt update
-apt -y install g++ git
+apt-get update
+apt-get -y install g++ git
 # sudo apt -y install python3
 # sudo apt -y install python3-pip
 # sudo apt -y install libgtest-dev
