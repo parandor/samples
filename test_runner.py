@@ -14,8 +14,12 @@ class TestRunner:
         os.makedirs(self.output_directory, exist_ok=True)
 
     def discover_tests(self):
-        test_files = [file for file in os.listdir(self.test_directory) if file.endswith(f".{self.language}")]
-        return test_files
+        if self.language == "go":
+            go_test_files = [os.path.join(self.test_directory, file) for _, _, files in os.walk(self.test_directory) for file in files if file.endswith("_test.go")]
+            return go_test_files
+        else:
+            test_files = [file for file in os.listdir(self.test_directory) if file.endswith(f".{self.language}")]
+            return test_files
 
     def compile_and_run_test(self, test_file):
         test_name = os.path.splitext(test_file)[0]
@@ -54,7 +58,7 @@ class TestRunner:
         if self.language == "cpp":
             return f"g++ -fdiagnostics-color=always -g -std=c++17 {os.path.join(self.test_directory, test_file)} -o {output_binary} -lgtest -lgtest_main -pthread -I cget/include/ -L cget/lib/**"
         elif self.language == "go":
-            return f"go test ./..."
+            return f"go test -v {os.path.join(self.test_directory, test_file)}"
         # Add more languages as needed
         else:
             raise ValueError(f"Unsupported language: {self.language}")
