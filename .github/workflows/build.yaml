@@ -25,6 +25,7 @@ jobs:
         # if [[ ":$PATH:" != *":/usr/local/go/bin:"* ]]; then
         echo 'export PATH=$PATH:/usr/local/go/bin' >> $HOME/.bashrc
         source $HOME/.bashrc
+        cat $HOME/.bashrc
         # fi
 
     - name: Run Tests
