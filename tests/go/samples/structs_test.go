@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"math"
 	"testing"
+	"github.com/parandor/samples/types"
 )
 
 // Simple struct definition
@@ -11,6 +12,8 @@ type Point struct {
 	X int
 	Y int
 }
+
+type Person types.Person
 
 // Test1: Creating an instance of a struct
 func TestCreateStructInstance(t *testing.T) {
@@ -41,7 +44,7 @@ func TestUpdateStructFields(t *testing.T) {
 // Test3: Using a struct with methods
 func TestStructWithMethods(t *testing.T) {
 	// Creating an instance of the Circle struct
-	circle := Circle{Radius: 2.5}
+	circle := types.Circle{Radius: 2.5}
 
 	// Calculating the area using the method
 	area := circle.Area()
@@ -100,13 +103,6 @@ func TestAnonymousStruct(t *testing.T) {
 	}
 }
 
-// Person struct definition
-type Person struct {
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Age       int    `json:"age"`
-}
-
 // Array and Slice of Structs
 func TestArrayOfStructs(t *testing.T) {
 	// Array of Persons
@@ -148,7 +144,7 @@ func TestEmbeddedStructs(t *testing.T) {
 }
 
 // JSON Marshaling/Unmarshaling example
-func TestJSONMarshalingUnmarshaling(t *testing.T) {
+func TestStructJSONMarshalingUnmarshaling(t *testing.T) {
 	// Creating an instance of the Person struct
 	johnDoe := Person{FirstName: "John", LastName: "Doe", Age: 30}
 
@@ -171,16 +167,9 @@ func TestJSONMarshalingUnmarshaling(t *testing.T) {
 	}
 }
 
-// Test6: Using JSON tags to control field names in JSON
-type PersonWithTags struct {
-	FirstName string `json:"first_name"`
-	LastName  string `json:"last_name"`
-	Age       int    `json:"age"`
-}
-
-func TestJSONTags(t *testing.T) {
+func TestStructJSONTags(t *testing.T) {
 	// Creating an instance of the PersonWithTags struct
-	janeDoe := PersonWithTags{FirstName: "Jane", LastName: "Doe", Age: 25}
+	janeDoe := Person{FirstName: "Jane", LastName: "Doe", Age: 25}
 
 	// Converting struct to JSON
 	jsonData, err := json.Marshal(janeDoe)
@@ -189,7 +178,7 @@ func TestJSONTags(t *testing.T) {
 	}
 
 	// Converting JSON to a struct
-	var newPerson PersonWithTags
+	var newPerson Person
 	err = json.Unmarshal(jsonData, &newPerson)
 	if err != nil {
 		t.Errorf("JSON Unmarshal error: %v", err)
@@ -203,15 +192,15 @@ func TestJSONTags(t *testing.T) {
 
 // Test7: Using JSON tags to control field names in JSON with embedded struct
 type EmployeeWithTags struct {
-	PersonWithTags        // Embedded struct with tags
-	JobRole        string `json:"job_role"`
+	Person         // Embedded struct with tags
+	JobRole string `json:"job_role"`
 }
 
-func TestEmbeddedStructsWithTags(t *testing.T) {
+func TestStructEmbeddedStructsWithTags(t *testing.T) {
 	// Creating an instance of the embedded struct with tags and additional field
 	seniorDev := EmployeeWithTags{
-		PersonWithTags: PersonWithTags{FirstName: "Mark", LastName: "Johnson", Age: 40},
-		JobRole:        "Senior Developer",
+		Person:  Person{FirstName: "Mark", LastName: "Johnson", Age: 40},
+		JobRole: "Senior Developer",
 	}
 
 	// Converting struct to JSON
@@ -233,12 +222,12 @@ func TestEmbeddedStructsWithTags(t *testing.T) {
 	}
 }
 
-func TestShapeInterface(t *testing.T) {
+func TestStructShapeInterface(t *testing.T) {
 	// Creating an instance of the Rectangle struct
-	rect := Rectangle{Width: 5, Height: 10}
+	rect := types.Rectangle{Width: 5, Height: 10}
 
 	// Calculating the area using the TotalArea function
-	totalArea := TotalArea(&rect)
+	totalArea := types.TotalArea(&rect)
 	expectedArea := rect.Area()
 
 	// Assertion
@@ -248,7 +237,7 @@ func TestShapeInterface(t *testing.T) {
 }
 
 // Test9: Using anonymous struct and array of structs
-func TestAnonymousStructAndArray(t *testing.T) {
+func TestStructsAnonymousStructAndArray(t *testing.T) {
 	// Creating an anonymous struct
 	person := struct {
 		Name    string
@@ -279,7 +268,7 @@ func TestAnonymousStructAndArray(t *testing.T) {
 // This test demonstrates the process of marshaling an anonymous struct to JSON
 // and then unmarshaling the JSON data back into a different struct with the
 // same structure.
-func TestJSONAnonymousStruct(t *testing.T) {
+func TestStructsJSONAnonymous(t *testing.T) {
 	// Creating an anonymous struct
 	data := struct {
 		Title  string   `json:"title"`

@@ -4,90 +4,8 @@ import (
 	"fmt"
 	"math"
 	"testing"
+	"github.com/parandor/samples/types"
 )
-
-// Shape is an interface representing a geometric shape.
-type Shape interface {
-	Area() float64
-}
-
-// ReadWriteCloser is an example interface with embedding.
-// The ReadWriteCloser interface embeds the Shape interface. This means any type
-// implementing ReadWriteCloser must also implement the Area method from the Shape
-// interface. Additionally, it introduces a new method Close(), which returns an error.
-// So, a type that implements ReadWriteCloser is expected to provide implementations
-// for both Area() and Close() methods.
-//
-// An interface defines a set of methods, and any type that implements those methods
-// implicitly satisfies the interface.
-// A type can implement multiple interfaces, enabling it to play different roles in
-// the program.
-
-type ReadWriteCloser interface {
-	Shape
-	Close() error
-}
-
-// Rectangle is a type that implements the Shape interface.
-type Rectangle struct {
-	Width  float64
-	Height float64
-}
-
-// Area method for Rectangle calculates the area of the rectangle.
-// When you define a method on a value receiver (as in func (r Rectangle) Area() float64),
-// you can call that method on both values and pointers to that type
-func (r Rectangle) Area() float64 {
-	return r.Width * r.Height
-}
-
-// Close method for Rectangle satisfies the Close method of ReadWriteCloser.
-func (r Rectangle) Close() error {
-	// Implement close logic here
-	fmt.Println("Closing the rectangle")
-	return nil
-}
-
-// Circle is a type that implements the Shape interface.
-type Circle struct {
-	Radius float64
-}
-
-// Area method for Circle calculates the area of the circle.
-func (c Circle) Area() float64 {
-	return math.Pi * c.Radius * c.Radius
-}
-
-// Close method for Circle satisfies the Close method of ReadWriteCloser.
-func (c Circle) Close() error {
-	// Implement close logic here
-	fmt.Println("Closing the circle")
-	return nil
-}
-
-// Stringer is an interface representing types that can be converted to a string.
-type Stringer interface {
-	String() string
-}
-
-// MyType is an example type that satisfies the Stringer interface.
-type MyType int
-
-// String method for MyType converts it to a string.
-func (mt MyType) String() string {
-	return fmt.Sprintf("MyType: %d", mt)
-}
-
-// TotalArea calculates the total area of multiple shapes.
-func TotalArea(shapes ...Shape) float64 {
-	total := 0.0
-	for _, shape := range shapes {
-		if shape != nil {
-			total += shape.Area()
-		}
-	}
-	return total
-}
 
 // identity is an example function using an empty interface as a generic type.
 func identity(value interface{}) interface{} {
@@ -100,8 +18,8 @@ func printAnyValue(value interface{}) {
 }
 
 // TestRectangleArea tests the Area method for Rectangle.
-func TestRectangleArea(t *testing.T) {
-	rect := Rectangle{Width: 5, Height: 10}
+func TestInterfacesRectangleArea(t *testing.T) {
+	rect := types.Rectangle{Width: 5, Height: 10}
 	result := rect.Area()
 	expected := 50.0
 
@@ -111,8 +29,8 @@ func TestRectangleArea(t *testing.T) {
 }
 
 // TestCircleArea tests the Area method for Circle.
-func TestCircleArea(t *testing.T) {
-	circle := Circle{Radius: 3}
+func TestInterfacesCircleArea(t *testing.T) {
+	circle := types.Circle{Radius: 3}
 	result := circle.Area()
 	expected := math.Pi * 3 * 3
 
@@ -122,11 +40,11 @@ func TestCircleArea(t *testing.T) {
 }
 
 // TestTotalArea tests the TotalArea function with multiple shapes.
-func TestTotalArea(t *testing.T) {
-	rect := Rectangle{Width: 5, Height: 10}
-	circle := Circle{Radius: 3}
+func TestInterfacesTotalArea(t *testing.T) {
+	rect := types.Rectangle{Width: 5, Height: 10}
+	circle := types.Circle{Radius: 3}
 
-	result := TotalArea(rect, circle)
+	result := types.TotalArea(rect, circle)
 	expected := rect.Area() + circle.Area()
 
 	if result != expected {
@@ -135,8 +53,8 @@ func TestTotalArea(t *testing.T) {
 }
 
 // TestTotalAreaNoShapes tests the TotalArea function with no shapes.
-func TestTotalAreaNoShapes(t *testing.T) {
-	result := TotalArea()
+func TestInterfacesTotalAreaNoShapes(t *testing.T) {
+	result := types.TotalArea()
 	expected := 0.0
 
 	if result != expected {
@@ -145,7 +63,7 @@ func TestTotalAreaNoShapes(t *testing.T) {
 }
 
 // TestEmptyInterface demonstrates the usage of empty interfaces.
-func TestEmptyInterface(t *testing.T) {
+func TestInterfacesEmptyInterface(t *testing.T) {
 	// No direct comparison as it involves printing
 	printAnyValue(42)
 	printAnyValue("Hello, Go!")
@@ -153,7 +71,7 @@ func TestEmptyInterface(t *testing.T) {
 }
 
 // TestTypeAssertion demonstrates type assertion on interfaces.
-func TestTypeAssertion(t *testing.T) {
+func TestInterfacesTypeAssertion(t *testing.T) {
 	var val interface{} = 42
 	result, ok := val.(int)
 
@@ -163,7 +81,7 @@ func TestTypeAssertion(t *testing.T) {
 }
 
 // TestTypeSwitch demonstrates the usage of a type switch on interfaces.
-func TestTypeSwitch(t *testing.T) {
+func TestInterfacesTypeSwitch(t *testing.T) {
 	values := []interface{}{42, "Go", 3.14}
 
 	for _, v := range values {
@@ -181,9 +99,9 @@ func TestTypeSwitch(t *testing.T) {
 }
 
 // TestInterfaceEmbedding demonstrates interface embedding.
-func TestInterfaceEmbedding(t *testing.T) {
-	rect := Rectangle{Width: 5, Height: 10}
-	var rwCloser ReadWriteCloser = rect
+func TestInterfacesEmbedding(t *testing.T) {
+	rect := types.Rectangle{Width: 5, Height: 10}
+	var rwCloser types.ReadWriteCloser = rect
 
 	areaResult := rwCloser.Area()
 	closeResult := rwCloser.Close()
@@ -203,7 +121,7 @@ func TestInterfaceEmbedding(t *testing.T) {
 }
 
 // TestEmptyInterfaceAsGenericType demonstrates using an empty interface as a generic type.
-func TestEmptyInterfaceAsGenericType(t *testing.T) {
+func TestInterfacesEmptyInterfaceAsGenericType(t *testing.T) {
 	result := identity(42)
 	expected := 42
 
@@ -213,8 +131,8 @@ func TestEmptyInterfaceAsGenericType(t *testing.T) {
 }
 
 // TestInterfaceSatisfactionImplicitly demonstrates interface satisfaction implicitly.
-func TestInterfaceSatisfactionImplicitly(t *testing.T) {
-	var s Stringer = MyType(42)
+func TestInterfacesSatisfactionImplicitly(t *testing.T) {
+	var s types.Stringer = types.MyType(42)
 	result := s.String()
 	expected := "MyType: 42"
 
@@ -222,19 +140,3 @@ func TestInterfaceSatisfactionImplicitly(t *testing.T) {
 		t.Errorf("Expected: %s, Got: %s", expected, result)
 	}
 }
-
-// func main() {
-// 	// Run the tests
-// 	t := new(testing.T)
-// 	TestRectangleArea(t)
-// 	TestCircleArea(t)
-// 	TestTotalArea(t)
-// 	TestTotalAreaNoShapes(t)
-// 	TestTotalAreaNilShape(t)
-// 	TestEmptyInterface(t)
-// 	TestTypeAssertion(t)
-// 	TestTypeSwitch(t)
-// 	TestInterfaceEmbedding(t)
-// 	TestEmptyInterfaceAsGenericType(t)
-// 	TestInterfaceSatisfactionImplicitly(t)
-// }
