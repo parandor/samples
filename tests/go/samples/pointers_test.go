@@ -7,15 +7,14 @@ import "testing"
 // This Go file contains sample unit tests showcasing various aspects of pointers in the Go language.
 // Pointers are used in Go for referencing and manipulating memory, allowing efficient and flexible
 // programming. The tests cover basic to advanced scenarios, including pointer initialization, assignment,
-// dereferencing, working with structs, and using pointers as function parameters. Additionally, nil
-// pointer checks are included to ensure safety when working with pointers.
+// dereferencing, working with structs, using pointers as function parameters, and a complex usage example
+// involving a linked list.
 
-type Person struct {
-    Name string
-    Age  int
+type Node struct {
+    Value int
+    Next  *Node
 }
 
-// TestPointerInitialization checks pointer initialization and ensures it starts with zero value.
 func TestPointerInitialization(t *testing.T) {
     var num int
     var pointer *int = &num
@@ -25,7 +24,6 @@ func TestPointerInitialization(t *testing.T) {
     }
 }
 
-// TestPointerAssignment demonstrates pointer assignment and validates the assigned values.
 func TestPointerAssignment(t *testing.T) {
     var x, y int
     var pointerX *int = &x
@@ -39,7 +37,6 @@ func TestPointerAssignment(t *testing.T) {
     }
 }
 
-// TestPointerDereferencing shows how to dereference pointers and compares the result.
 func TestPointerDereferencing(t *testing.T) {
     var num int = 42
     var pointer *int = &num
@@ -55,7 +52,6 @@ func TestPointerDereferencing(t *testing.T) {
     }
 }
 
-// TestPointerToStruct demonstrates using pointers with structs and updating values through pointers.
 func TestPointerToStruct(t *testing.T) {
     person := Person{Name: "John", Age: 30}
     var pointer *Person = &person
@@ -71,14 +67,12 @@ func TestPointerToStruct(t *testing.T) {
     }
 }
 
-// squareByReference is a helper function for TestPointerAsFunctionParameter, squaring the value through a pointer.
 func squareByReference(num *int) {
     if num != nil {
         *num = *num * *num
     }
 }
 
-// TestPointerAsFunctionParameter demonstrates using pointers as function parameters.
 func TestPointerAsFunctionParameter(t *testing.T) {
     value := 5
     var pointer *int = &value
@@ -91,5 +85,30 @@ func TestPointerAsFunctionParameter(t *testing.T) {
         }
     } else {
         t.Errorf("Unexpected nil pointer")
+    }
+}
+
+// TestComplexPointerUsage demonstrates a complex usage of pointers by implementing a linked list.
+func TestComplexPointerUsage(t *testing.T) {
+    // Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
+    head := &Node{Value: 1}
+    current := head
+
+    for i := 2; i <= 5; i++ {
+        newNode := &Node{Value: i}
+        current.Next = newNode
+        current = newNode
+    }
+
+    // Traversing the linked list and verifying values
+    expectedValues := []int{1, 2, 3, 4, 5}
+    current = head
+
+    for i := 0; i < len(expectedValues); i++ {
+        if current == nil || current.Value != expectedValues[i] {
+            t.Errorf("Expected value in linked list at index %d to be %d, got %d", i, expectedValues[i], current.Value)
+        }
+
+        current = current.Next
     }
 }
