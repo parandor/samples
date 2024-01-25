@@ -1,5 +1,3 @@
-// functions_test.go
-
 package samples
 
 import (

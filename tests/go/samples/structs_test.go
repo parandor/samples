@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"math"
 	"testing"
-	"github.com/parandor/samples/types"
+	"github.com/parandor/samples/tests/go/types"
 )
 
 // Simple struct definition

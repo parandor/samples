@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math"
 	"testing"
-	"github.com/parandor/samples/types"
+	"github.com/parandor/samples/tests/go/types"
 )
 
 // identity is an example function using an empty interface as a generic type.

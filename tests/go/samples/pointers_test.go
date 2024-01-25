@@ -2,7 +2,7 @@ package samples
 
 import (
 	"testing"
-	"github.com/parandor/samples/types"	
+	"github.com/parandor/samples/tests/go/types"	
 )
 
 // Summary: Go Pointers Usage
