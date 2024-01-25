@@ -53,7 +53,7 @@ func TestPointerDereferencing(t *testing.T) {
 }
 
 func TestPointerToStruct(t *testing.T) {
-    person := Person{Name: "John", Age: 30}
+    person := Person{FirstName: "John", Age: 30}
     var pointer *Person = &person
 
     if pointer != nil {
