@@ -62,7 +62,8 @@ class TestRunner:
         if self.language == "cpp":
             return f"g++ -fdiagnostics-color=always -g -std=c++17 {os.path.join(self.test_directory, test_file)} -o {output_binary} -lgtest -lgtest_main -pthread -I cget/include/ -L cget/lib/**"
         elif self.language == "go":
-            return f"go test -v {test_file}"
+            cd = f"cd {os.getcwd()}/tests/go"
+            return f"{cd} && go test -v {test_file}"
         # Add more languages as needed
         else:
             raise ValueError(f"Unsupported language: {self.language}")
