@@ -140,3 +140,62 @@ func TestInterfacesSatisfactionImplicitly(t *testing.T) {
 		t.Errorf("Expected: %s, Got: %s", expected, result)
 	}
 }
+
+// Printer is an interface with a Print method.
+type Printer interface {
+	Print() string
+}
+
+// Document represents a printable document.
+type Document struct {
+	Title string
+}
+
+// Print method for Document.
+func (d Document) Print() string {
+	return fmt.Sprintf("Printing document: %s", d.Title)
+}
+
+// Image represents a printable image.
+type Image struct {
+	Name string
+}
+
+// Print method for Image.
+func (i Image) Print() string {
+	return fmt.Sprintf("Printing image: %s", i.Name)
+}
+
+// PrintWithAssertion prints the content using type assertion based on the underlying type.
+func PrintWithAssertion(p interface{}) string {
+	switch v := p.(type) {
+	case Printer:
+		return v.Print()
+	default:
+		return "Unsupported type"
+	}
+}
+
+// TestTypeAssertion demonstrates type assertion in the context of the Printer interface.
+func TestInterfacesTypeAssertionAdvanced(t *testing.T) {
+	document := Document{Title: "GoLang Basics"}
+	image := Image{Name: "Nature.jpg"}
+
+	// Testing type assertion with Document
+	documentResult := PrintWithAssertion(document)
+	if documentResult != "Printing document: GoLang Basics" {
+		t.Errorf("Unexpected result for Document. Got: %s", documentResult)
+	}
+
+	// Testing type assertion with Image
+	imageResult := PrintWithAssertion(image)
+	if imageResult != "Printing image: Nature.jpg" {
+		t.Errorf("Unexpected result for Image. Got: %s", imageResult)
+	}
+
+	// Testing type assertion with unsupported type
+	unsupportedResult := PrintWithAssertion("Unsupported")
+	if unsupportedResult != "Unsupported type" {
+		t.Errorf("Unexpected result for unsupported type. Got: %s", unsupportedResult)
+	}
+}

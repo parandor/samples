@@ -145,9 +145,12 @@ public:
         std::unique_lock<std::mutex> lock(mutex_);
         condition_.wait(lock, [this]
                         { return !buffer_.empty(); });
-        T item = buffer_.front();
-        buffer_.pop();
-        return item;
+        if (!buffer_.empty()) {
+            T item = buffer_.front();
+            buffer_.pop();            
+            return item;
+        }
+        return T(-1);
     }
 
     size_t size() const
