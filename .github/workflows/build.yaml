@@ -25,11 +25,14 @@ jobs:
         sudo apt-get -y install g++ git python3 python3-pip libgtest-dev
 
     - name: Download Libraries
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: libraries
         path: .
-        
+
+    - name: Extract Artifact
+      run: tar xzf libraries.tar.gz
+
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
