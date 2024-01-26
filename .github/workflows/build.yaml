@@ -36,12 +36,8 @@ jobs:
         #   "completed", "in_progress", "queued"
         # Use the empty string ("") to ignore status or conclusion in the search
         workflow_conclusion: success
-        workflow: build_libraries.yml
+        workflow: build_libraries.yaml
         if_no_artifact_found: fail
-        # Optional, will use the specified branch. Defaults to all branches
-        branch: main
-        # Optional, defaults to all types
-        event: push
         # Optional, run number from the workflow
         run_number: 4
         name: libraries
