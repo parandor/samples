@@ -1,6 +1,7 @@
 # Author: Peter Arandorenko
 # Date: January 21, 2024
 
+import argparse
 import os
 import subprocess
 
@@ -10,9 +11,9 @@ class TestRunner:
         print(f"Test path: {self.test_directory}")
         self.output_directory = os.path.join(output_directory, language)
         self.language = language.lower()
-        self.blacklist = blacklist or []
+        self.blacklist = blacklist or  []
         os.makedirs(self.output_directory, exist_ok=True)
-
+        
     def discover_tests(self):
         if self.language == "go":
             go_test_files = [os.path.join(root, file) for root, _, files in os.walk(self.test_directory) for file in files if file.endswith("_test.go")]
@@ -78,29 +79,39 @@ class TestRunner:
         else:
             raise ValueError(f"Unsupported language: {self.language}")
 
+    def extract_filename_from_path(file_path):
+        # Extract the rightmost part until the first forward slash
+        return file_path.rsplit('/', 1)[-1]
+
     def run_tests(self):
         tests = self.discover_tests()
 
         for test_file in tests:
-            if test_file in self.blacklist:
+            if TestRunner.extract_filename_from_path(test_file) in self.blacklist:
                 print(f"Skipping test (blacklisted): {test_file}")
                 continue
+
             print(f"")
             print(f"Running test: {test_file}")
+
             self.compile_and_run_test(test_file)
 
 if __name__ == "__main__":
-    blacklist = [# "serialization.cpp", 
-                 # "thread.cpp"
-                 ]
-    # Example usage for C++ tests
-    cpp_test_runner = TestRunner(test_directory="tests", language="cpp", blacklist=blacklist)
-    cpp_test_runner.run_tests()
 
-    go_test_runner = TestRunner(test_directory="tests", language="go")
-    go_test_runner.run_tests()
+    parser = argparse.ArgumentParser(description='Run tests with blacklist.')
+    parser.add_argument('--language', choices=['cpp', 'go', 'py', 'all'], required=True, help='Programming language to run tests on')
+    parser.add_argument('--test-directory', default='tests', help='Directory containing the tests')
+    parser.add_argument('--blacklist', nargs='+', help='List of files to blacklist')
 
-    # Example usage for other language tests
-    # Modify the language and test_directory accordingly
-    # python_test_runner = TestRunner(test_directory="tests/python", language="python")
-    # python_test_runner.run_tests()
+    args = parser.parse_args()
+
+    if args.language == 'all':
+        languages = ['cpp', 'go', 'py']
+    else:
+        languages = [args.language]
+
+    for language in languages:
+        blacklist = args.blacklist if args.blacklist else []
+        print(language)
+        test_runner = TestRunner(test_directory=args.test_directory, language=language, blacklist=blacklist)
+        test_runner.run_tests()
