@@ -25,7 +25,8 @@ jobs:
         sudo apt-get -y install g++ git python3 python3-pip libgtest-dev
 
     - name: Download Libraries
-      uses: actions/download-artifact@v3
+      id: download-artifact
+      uses: dawidd6/action-download-artifact@v2
       with:
         github_token: ${{secrets.GITHUB_TOKEN}}
         # Optional, the status or conclusion of a completed workflow to search for
