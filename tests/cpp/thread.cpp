@@ -140,17 +140,20 @@ public:
         condition_.notify_one();
     }
 
-    T pop()
+    std::optional<T> pop()
     {
         std::unique_lock<std::mutex> lock(mutex_);
         condition_.wait(lock, [this]
                         { return !buffer_.empty(); });
-        if (!buffer_.empty()) {
-            T item = buffer_.front();
-            buffer_.pop();            
-            return item;
+
+        if (!buffer_.empty())
+        {
+            T item = std::move(buffer_.front());
+            buffer_.pop();
+            return std::optional<T>(std::move(item));
         }
-        return T(-1);
+
+        return std::nullopt; // Represents the absence of a value
     }
 
     size_t size() const
@@ -217,15 +220,14 @@ public:
     {
         while (true)
         {
-            int item = buffer_.pop();
-
+            // Example usage
+            auto result = buffer_.pop();
             // Check for the sentinel value (-1) to signal end of production
-            if (item == -1)
+            if (!result || result == -1)
             {
                 break;
             }
-
-            results_.push_back(item);
+            results_.push_back(result.value());
             std::this_thread::sleep_for(std::chrono::milliseconds(5)); // Simulate some work
         }
     }
