@@ -24,13 +24,12 @@ jobs:
         sudo apt-get update
         sudo apt-get -y install g++ git python3 python3-pip libgtest-dev
 
-        # Install Python packages using pip
-        pip3 install cget
-
-        # Install dependencies [JSON, boost] using cget
-        #cget install https://github.com/nlohmann/json/archive/refs/tags/v3.11.3.tar.gz
-        #cget install https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.gz
-
+    - name: Download Libraries
+      uses: actions/download-artifact@v2
+      with:
+        name: libraries
+        path: .
+        
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
@@ -43,7 +42,7 @@ jobs:
         git --version
         python3 --version
         pip3 --version
-        #cget --version
+        cget --version
         go version
 
     - name: Run Tests
