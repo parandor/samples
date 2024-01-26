@@ -38,8 +38,6 @@ jobs:
         workflow_conclusion: success
         workflow: build_libraries.yaml
         if_no_artifact_found: fail
-        # Optional, run number from the workflow
-        run_number: 4
         name: libraries
         path: .
 
