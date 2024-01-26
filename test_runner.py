@@ -90,7 +90,7 @@ class TestRunner:
             self.compile_and_run_test(test_file)
 
 if __name__ == "__main__":
-    blacklist = ["serialization.cpp", 
+    blacklist = [# "serialization.cpp", 
                  # "thread.cpp"
                  ]
     # Example usage for C++ tests
