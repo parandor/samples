@@ -27,6 +27,20 @@ jobs:
     - name: Download Libraries
       uses: actions/download-artifact@v3
       with:
+        github_token: ${{secrets.GITHUB_TOKEN}}
+        # Optional, the status or conclusion of a completed workflow to search for
+        # Can be one of a workflow conclusion:
+        #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
+        # Or a workflow status:
+        #   "completed", "in_progress", "queued"
+        # Use the empty string ("") to ignore status or conclusion in the search
+        workflow_conclusion: success
+        workflow: build_libraries.yml
+        if_no_artifact_found: fail
+        # Optional, will use the specified branch. Defaults to all branches
+        branch: main
+        # Optional, defaults to all types
+        event: push
         name: libraries
         path: .
 
