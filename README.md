@@ -40,7 +40,8 @@ The following is a list of GitHub workflows supported:
 
 | Workflow                            | Description                                                                          |
 |-------------------------------------|--------------------------------------------------------------------------------------|
-|[build.yaml](\.github/workflows/build.yaml) | Installs permissions, dependencies, builds, and runs all tests.|
+|[build_libraries.yaml](\.github/workflows/build_libraries.yaml) | Installs dependencies, libraries, and uploads artifacts.|
+|[build.yaml](\.github/workflows/build.yaml) | Installs dependencies, downloads artifacts, builds, and runs all tests.|
 
 ## Self-Hosted Runners
 
