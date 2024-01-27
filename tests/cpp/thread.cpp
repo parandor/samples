@@ -162,6 +162,16 @@ public:
         return buffer_.size();
     }
 
+    std::vector<T> buffer() {
+        std::unique_lock<std::mutex> lock(mutex_);
+        std::vector<T> tempVector;
+        while (!buffer_.empty()) {
+            tempVector.push_back(std::move(buffer_.front()));
+            buffer_.pop();
+        }
+        return tempVector;
+    }
+
     void clear()
     {
         std::unique_lock<std::mutex> lock(mutex_);
@@ -213,7 +223,7 @@ private:
 class Consumer
 {
 public:
-    Consumer(SharedBuffer<int> &buffer, std::vector<int> &results, int numItems)
+    Consumer(SharedBuffer<int> &buffer, SharedBuffer<int> &results, int numItems)
         : buffer_(buffer), results_(results), numItems_(numItems) {}
 
     void operator()()
@@ -227,14 +237,15 @@ public:
             {
                 break;
             }
-            results_.push_back(result.value());
+            
+            results_.push(result.value());
             std::this_thread::sleep_for(std::chrono::milliseconds(5)); // Simulate some work
         }
     }
 
 private:
     SharedBuffer<int> &buffer_;
-    std::vector<int> &results_;
+    SharedBuffer<int> &results_;
     int numItems_;
 };
 
@@ -252,7 +263,7 @@ TEST_F(ProducerConsumerTest, ProducerConsumerInteraction)
 
     std::vector<std::thread> producerThreads;
     std::vector<std::thread> consumerThreads;
-    std::vector<int> results;
+    SharedBuffer<int> results;
 
     // Create producer threads
     for (int i = 0; i < numProducers; ++i)
@@ -285,14 +296,15 @@ TEST_F(ProducerConsumerTest, ProducerConsumerInteraction)
     }
 
     // Check if all expected items are present in the results
-    std::sort(results.begin(), results.end());
+    auto copy = results.buffer();
+    std::sort(copy.begin(), copy.end());
     std::vector<int> expectedResults;
     for (int i = 0; i < numProducers * numItems; ++i)
     {
         expectedResults.push_back(i);
     }
 
-    ASSERT_EQ(results, expectedResults);
+    ASSERT_EQ(copy, expectedResults);
 }
 
 int main(int argc, char **argv)
