@@ -25,13 +25,8 @@ jobs:
           # Install Python packages using pip
           pip3 install cget
 
-          # Find the cget installation directory
-          CGET_DIR="$HOME/.local/bin"
+          # Install user's private bin path for cget
           PROFILE_DIR="$HOME/.profile"
-          # Check if the directory is not already in the profile
-          if ! grep -qF "$CGET_DIR" "$PROFILE_DIR"; then
-            echo 'export PATH="$PATH:$CGET_DIR"' >> $PROFILE_DIR
-          fi
           source $PROFILE_DIR
 
           # Install dependencies [JSON, boost] using cget
