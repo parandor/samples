@@ -56,7 +56,6 @@ jobs:
         git --version
         python3 --version
         pip3 --version
-        cget --version
         go version
 
     - name: Run Tests
