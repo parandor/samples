@@ -27,7 +27,8 @@ TEST(IteratorTests, ModifyVector) {
     }
 
     // After modification, the vector should be {2, 4, 6, 8, 10}
-    ASSERT_EQ(numbers, std::vector<int>{2, 4, 6, 8, 10});
+    auto rhs = std::vector<int>{2, 4, 6, 8, 10};
+    ASSERT_EQ(numbers, rhs);
 }
 
 // Advanced test 2: Lookup specific elements using iterators
@@ -60,7 +61,8 @@ TEST(IteratorTests, FindAndErase) {
     }
 
     // After erasing, the vector should be {1, 2, 4, 5}
-    ASSERT_EQ(numbers, std::vector<int>{1, 2, 4, 5});
+    auto rhs = std::vector<int>{1, 2, 4, 5};
+    ASSERT_EQ(numbers, rhs);
 }
 
 // Advanced test 5: Reverse the order of elements using iterators
@@ -71,7 +73,8 @@ TEST(IteratorTests, ReverseOrder) {
     std::reverse(numbers.begin(), numbers.end());
 
     // After reversing, the vector should be {5, 4, 3, 2, 1}
-    ASSERT_EQ(numbers, std::vector<int>{5, 4, 3, 2, 1});
+    auto rhs = std::vector<int>{5, 4, 3, 2, 1};
+    ASSERT_EQ(numbers, rhs);
 }
 
 // Advanced test 6: Use iterators with algorithms (accumulate)
