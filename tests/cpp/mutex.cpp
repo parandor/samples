@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <condition_variable>
+#include <iostream>
 #include <mutex>
 #include <thread>
 
@@ -26,12 +27,12 @@ TEST(MutexTest, MultipleThreads) {
         sharedValue = 10;
     });
 
+    t1.join();  // Ensure t1 completes before t2 is started
     std::thread t2([&mutex, &sharedValue] {
         std::lock_guard<std::mutex> lock(mutex);
         sharedValue += 5;
     });
 
-    t1.join();
     t2.join();
 
     ASSERT_EQ(sharedValue, 15);
