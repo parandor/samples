@@ -26,15 +26,13 @@ jobs:
           pip3 install cget
 
           # Install user's private bin path for cget
+          CGET_DIR="$HOME/.local/bin"
           PROFILE_DIR="$HOME/.profile"
+          # Check if the directory is not already in the profile
+          if ! grep -qF "$CGET_DIR" "$PROFILE_DIR"; then
+            echo "export PATH=\"\$PATH:$CGET_DIR\"" >> "$PROFILE_DIR"
+          fi
           source $PROFILE_DIR
-
-          # Install dependencies [JSON, boost] using cget
-          cget install https://github.com/nlohmann/json/archive/refs/tags/v3.11.3.tar.gz
-          cget install https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.gz
-
-      - name: Create Archive
-        run: tar czf libraries.tar.gz cget
 
       - name: Display Installed Versions
         run: |
@@ -44,6 +42,15 @@ jobs:
           python3 --version
           pip3 --version
           cget --version
+
+      - name: Build Libraries
+        run: |
+          # Install dependencies [JSON, boost] using cget
+          cget install https://github.com/nlohmann/json/archive/refs/tags/v3.11.3.tar.gz
+          cget install https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.gz
+
+      - name: Create Archive
+        run: tar czf libraries.tar.gz cget
           
       - name: Archive Libraries
         uses: actions/upload-artifact@v3
