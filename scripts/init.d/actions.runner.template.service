@@ -1,0 +1,13 @@
+[Unit]
+Description=GitHub Actions Runner (parandor-samples.qnap-ubuntu-22.04)
+After=network.target
+
+[Service]
+ExecStart=/home/peter/actions-runner/runsvc.sh
+WorkingDirectory=/home/peter/actions-runner
+KillMode=process
+KillSignal=SIGTERM
+TimeoutStopSec=5min
+
+[Install]
+WantedBy=multi-user.target

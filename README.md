@@ -45,15 +45,43 @@ The following is a list of GitHub workflows supported:
 
 ## Self-Hosted Runners
 
-1. Add self-hosted runners by following this [link](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/adding-self-hosted-runners)
+Add self-hosted runners by following this [link](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/adding-self-hosted-runners)
 
-2. Configure the self-hosted runner application as a service to start on boot [here](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/configuring-the-self-hosted-runner-application-as-a-service)\
-`Note: Handle the User used to start the self-hosted runner applications. The user may be set in /etc/systemd/system/actions.runner.<githubuser>-<repo>.<host>.service`\
-`Note: For systems that do not use systemd, manually run the following: ./bin/runsvc.sh ./bin/actions.runner.service.template`
+### Start Service on Boot
 
-3. To find the service name in the list of running services on Linux systems you can use the systemctl command:
-    ```
-    $ systemctl --type=service | grep actions.runner
-    ```
-    `actions.runner.<hostname>.service loaded active running GitHub Actions Runner (<hostname>)`
+Configure the self-hosted runner application as a service to start on boot [here](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/configuring-the-self-hosted-runner-application-as-a-service)\
+`Note: Handle the User used to start the self-hosted runner applications. The user may be set in /etc/systemd/system/actions.runner.<githubuser>-<repo>.<host>.service`
+
+To find the service name in the list of running services on Linux systems:
+```
+$ systemctl --type=service | grep actions.runner
+actions.runner.<hostname>.service loaded active running GitHub Actions Runner (<hostname>)
+```
+
+### Non-systemd Boot Systems
+
+If your system boots with init.d, perform the following steps to launch the actions runner as a service:
+1. Copy [my-custom-service-runner](scripts/init.d/my-custom-service-runner) to init.d: 
+```
+sudo cp scripts/init.d/my-custom-service-runner /etc/init.d
+```
+2. Update paths as necessary.
+3. (Optional) Use [actions.runner.template.service](scripts/init.d/actions.runner.template.service) as template
+4. Make the script executable: 
+```
+sudo chmod +x /etc/init.d/my-custom-service-runner
+```
+5. Update the rc.d system links (to start script on boot): 
+```
+sudo update-rc.d my-custom-service-runner defaults
+```
+6. Start the service: 
+```
+sudo service my-custom-service-runner start
+```
+
+If all else fails, use manual mode to start the service:
+``` 
+./bin/runsvc.sh ./bin/actions.runner.service.template
+```
 

@@ -1,0 +1,36 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          my-custom-service-runner
+# Required-Start:    $all
+# Required-Stop:     $all
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: My Custom Service
+# Description:       This script starts the actions runner using init.d boot system, instead of systemd.
+### END INIT INFO
+
+start() {
+    cd /home/peter/actions-runner
+    ./bin/runsvc.sh /etc/init.d/actions.runner.parandor-samples.qnap-ubuntu-22.04.service
+}
+
+stop() {
+    # Add stop command if needed
+    echo "Service stopped"
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        stop
+        sleep 1
+        start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+esac
