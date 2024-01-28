@@ -41,6 +41,64 @@ TEST(AlgorithmTests, AccumulateTest)
     EXPECT_EQ(sum, 15);
 }
 
+// Sorting Test
+TEST(AlgorithmTests, SortingTest) {
+    std::vector<int> numbers = {4, 2, 7, 1, 9};
+    std::sort(numbers.begin(), numbers.end());
+    ASSERT_EQ(numbers, std::vector<int>{1, 2, 4, 7, 9});
+}
+
+// Searching Test
+TEST(AlgorithmTests, SearchingTest) {
+    std::vector<int> numbers = {1, 2, 4, 7, 9};
+    auto it = std::find(numbers.begin(), numbers.end(), 4);
+    ASSERT_NE(it, numbers.end());
+    ASSERT_EQ(*it, 4);
+}
+
+// Transform Test
+TEST(AlgorithmTests, TransformTest) {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+    std::transform(numbers.begin(), numbers.end(), numbers.begin(), [](int n) { return n * 2; });
+    ASSERT_EQ(numbers, std::vector<int>{2, 4, 6, 8, 10});
+}
+
+// Accumulation Test
+TEST(AlgorithmTests, AccumulationTest) {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+    int sum = std::accumulate(numbers.begin(), numbers.end(), 0);
+    ASSERT_EQ(sum, 15);
+}
+
+// Unique Test
+TEST(AlgorithmTests, UniqueTest) {
+    std::vector<int> numbers = {1, 2, 2, 3, 4, 4, 4, 5};
+    auto newEnd = std::unique(numbers.begin(), numbers.end());
+    numbers.erase(newEnd, numbers.end());
+    ASSERT_EQ(numbers, std::vector<int>{1, 2, 3, 4, 5});
+}
+
+// Additional Test: Reverse Test
+TEST(AlgorithmTests, ReverseTest) {
+    std::vector<int> numbers = {1, 2, 3, 4, 5};
+    std::reverse(numbers.begin(), numbers.end());
+    ASSERT_EQ(numbers, std::vector<int>{5, 4, 3, 2, 1});
+}
+
+// Additional Test: Fill Test
+TEST(AlgorithmTests, FillTest) {
+    std::vector<int> numbers(5);
+    std::fill(numbers.begin(), numbers.end(), 42);
+    ASSERT_EQ(numbers, std::vector<int>{42, 42, 42, 42, 42});
+}
+
+// Additional Test: Count Test
+TEST(AlgorithmTests, CountTest) {
+    std::vector<int> numbers = {1, 2, 2, 3, 4, 4, 4, 5};
+    int count = std::count(numbers.begin(), numbers.end(), 4);
+    ASSERT_EQ(count, 3);
+}
+
 // Add more tests as needed
 
 int main(int argc, char **argv)
