@@ -1,6 +1,7 @@
-#include <iostream>
-#include <vector>
 #include <algorithm>
+#include <iostream>
+#include <numeric>
+#include <vector>
 #include <gtest/gtest.h>
 
 // Beginner test: Check if iterators can traverse a vector
