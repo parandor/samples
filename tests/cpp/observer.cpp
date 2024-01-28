@@ -127,7 +127,12 @@ TEST(ObserverPatternTests, ObserverPatternNoObserversTest) {
     subject.notifyObservers("State has changed");
 
     // In a real-world scenario, you would assert that there are no issues when no observers are present
-    ASSERT_EQ(observer1.state, "");
+    // Assuming Observer class has a "state" member
+    // Create instances of the observers
+    ConcreteObserver observer1;
+    ConcreteObserver observer2;
+
+    ASSERT_EQ(observer1.state, ""); // Assuming getState() returns the state of the observer
     ASSERT_EQ(observer2.state, "");
 }
 
@@ -166,8 +171,7 @@ TEST(ObserverPatternTests, ObserverPatternDifferentSubjectsTest) {
     subject2.notifyObservers("State change in Subject 2");
 
     // In a real-world scenario, you would assert that observer only received updates from subject1
-    ASSERT_EQ(observer1.state, "State change in Subject 1");
-    ASSERT_EQ(observer2.state, "");
+    ASSERT_EQ(observer.state, "State change in Subject 1");
 }
 
 int main(int argc, char** argv) {

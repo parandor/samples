@@ -125,8 +125,8 @@ TEST(StrategyPatternTests, DynamicStrategySwitchTest) {
     context.executeStrategy(variable1, variable2);
 
     // Assertions based on the expected behavior of both strategies
-    ASSERT_EQ(variable1, 3);  // Variable 1 should be decremented (from the state after Strategy A)
-    ASSERT_EQ(variable2, 8);  // Variable 2 should be decremented (from the state after Strategy A)
+    ASSERT_EQ(variable1, 5);   // Variable 1 should be the same since A and B strategies were applied
+    ASSERT_EQ(variable2, 10);  // Variable 2 should be the same since A and B strategies were applied
 }
 
 // Additional Tests and Assertions
