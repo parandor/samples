@@ -24,14 +24,15 @@ jobs:
 
           # Install Python packages using pip
           pip3 install cget
+
           # Find the cget installation directory
           CGET_DIR="$HOME/.local/bin"
-          # Check if the directory is not already in the PATH
-          if [[ ":$PATH:" != *":$CGET_DIR:"* ]]; then
-              # Add the directory to the PATH
-              export PATH="$PATH:$CGET_DIR"
+          PROFILE_DIR=$HOME/.profile
+          # Check if the directory is not already in the profile
+          if ! grep -qF "$CGET_DIR" "$PROFILE_DIR"; then
+            echo 'export PATH="$PATH:$CGET_DIR"' >> $PROFILE_DIR
           fi
-          source $HOME/.bashrc
+          source $PROFILE_DIR
 
           # Install dependencies [JSON, boost] using cget
           cget install https://github.com/nlohmann/json/archive/refs/tags/v3.11.3.tar.gz
