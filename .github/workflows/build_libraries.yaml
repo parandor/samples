@@ -20,7 +20,7 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get -y install tar gzip g++ git python3 python3-pip libgtest-dev
+          sudo apt-get -y install tar gzip cmake g++ git python3 python3-pip libgtest-dev
 
           # Install Python packages using pip
           pip3 install cget
@@ -42,6 +42,7 @@ jobs:
 
       - name: Display Installed Versions
         run: |
+          cmake --version
           g++ --version
           git --version
           python3 --version
