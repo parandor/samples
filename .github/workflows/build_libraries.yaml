@@ -27,7 +27,7 @@ jobs:
 
           # Find the cget installation directory
           CGET_DIR="$HOME/.local/bin"
-          PROFILE_DIR=$HOME/.profile
+          PROFILE_DIR="$HOME/.profile"
           # Check if the directory is not already in the profile
           if ! grep -qF "$CGET_DIR" "$PROFILE_DIR"; then
             echo 'export PATH="$PATH:$CGET_DIR"' >> $PROFILE_DIR
