@@ -11,11 +11,11 @@
 
 start() {
     cd /home/peter/actions-runner
-    ./bin/runsvc.sh /etc/init.d/actions.runner.parandor-samples.qnap-ubuntu-22.04.service
+    ./bin/runsvc.sh /etc/init.d/actions.runner.service.template
 }
 
 stop() {
-    # Add stop command if needed
+    pkill -f "my-custom-service-runner"
     echo "Service stopped"
 }
 

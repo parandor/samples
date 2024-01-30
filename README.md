@@ -61,25 +61,35 @@ actions.runner.<hostname>.service loaded active running GitHub Actions Runner (<
 ### Non-systemd Boot Systems
 
 If your system boots with init.d, perform the following steps to launch the actions runner as a service:
-1. Copy [my-custom-service-runner](scripts/init.d/my-custom-service-runner) to init.d: 
+1. Copy [boot-script](scripts/init.d/boot-script) to init.d: 
 ```
-sudo cp scripts/init.d/my-custom-service-runner /etc/init.d
+sudo cp scripts/init.d/boot-script /etc/init.d
 ```
 2. Update paths as necessary.
-3. (Optional) Use [actions.runner.template.service](scripts/init.d/actions.runner.template.service) as template
+3. Copy [actions.runner.service.template](scripts/init.d/actions.runner.service.template) to init.d:
+```
+sudo cp scripts/init.d/actions.runner.service.template /etc/init.d
+```
 4. Make the script executable: 
 ```
-sudo chmod +x /etc/init.d/my-custom-service-runner
+sudo chmod +x /etc/init.d/boot-script
 ```
 5. Update the rc.d system links (to start script on boot): 
 ```
-sudo update-rc.d my-custom-service-runner defaults
+sudo update-rc.d boot-script defaults
 ```
-6. Start the service: 
+If the above fails, link it to the booter:
 ```
-sudo service my-custom-service-runner start
+sudo ln -s /etc/init.d/boot-script /etc/rc2.d/S20boot-script
 ```
-
+6. (Optional) Start the service: 
+```
+sudo service boot-script start
+```
+7. (Optional) Check service status
+```
+sudo service boot-script status
+```
 If all else fails, use manual mode to start the service:
 ``` 
 ./bin/runsvc.sh ./bin/actions.runner.service.template
