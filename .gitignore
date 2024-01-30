@@ -22,6 +22,9 @@
 *.a
 *.lib
 
+# Compressed files
+*.tar
+
 # Executables
 *.exe
 *.out

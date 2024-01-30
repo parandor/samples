@@ -16,6 +16,14 @@ To install dependencies, run:
 ./install.sh
 ```
 
+## Docker
+
+There is a Dockerfile that creates a full install of all dependencies. 
+To install the self-hosted runner, a TOKEN parameter needs tobe supplied, which provides authentication.
+```
+docker build --build-args TOKEN=<your_token> <repo>:<tag> .
+```
+
 ## Go
 
 Go development tutorial can be found [here](https://code.visualstudio.com/docs/languages/go)
