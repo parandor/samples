@@ -23,6 +23,7 @@ jobs:
       run: |
         apt-get update
         apt-get -y install g++ git python3 python3-pip libgtest-dev
+      sudo: required
 
     - name: Download Libraries
       id: download-artifact
