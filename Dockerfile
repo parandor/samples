@@ -7,9 +7,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Python packages using pip
-# RUN pip3 install cget
-
 # Create a new user
 ENV USER=peter
 ENV HOME=/home/$USER
@@ -25,10 +22,6 @@ WORKDIR $HOME
 
 # Switch to the non-root user for actions-runner installation
 USER $USER
-
-# Install additional dependencies using cget
-# RUN cget install https://github.com/nlohmann/json/archive/refs/tags/v3.11.3.tar.gz && \
-#    cget install https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.gz
 
 ARG TOKEN=""
 ARG RUNNER_NAME=""
