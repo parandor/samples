@@ -21,7 +21,7 @@ To install dependencies, run:
 There is a Dockerfile that creates a full install of all dependencies. 
 To install the self-hosted runner, a TOKEN parameter needs tobe supplied, which provides authentication.
 ```
-docker build --build-args TOKEN=<your_token> <repo>:<tag> .
+docker build --build-arg TOKEN=<your_token> --build-arg RUNNER_NAME=<runner_name> -t <repo>:<tag> .
 ```
 
 ## Go

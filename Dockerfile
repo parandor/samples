@@ -31,12 +31,13 @@ USER $USER
 #    cget install https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.gz
 
 ARG TOKEN=""
+ARG RUNNER_NAME=""
 # The token is supplied by GitHub when a new self-hosted runner is created. 
 # Replace the token as required, otherwise build will fail authentication.
 RUN mkdir actions-runner && cd actions-runner && \
     curl -o actions-runner-linux-x64-2.312.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.312.0/actions-runner-linux-x64-2.312.0.tar.gz && \
     tar xzf ./actions-runner-linux-x64-2.312.0.tar.gz && \
-    ./config.sh --url https://github.com/parandor/samples --token $TOKEN
+    ./config.sh --name $RUNNER_NAME --url https://github.com/parandor/samples --token $TOKEN
 
 COPY scripts/init.d/* /etc/init.d/
 
