@@ -4,8 +4,9 @@ FROM ubuntu:22.04
 # Update package lists and install required tools
 RUN apt-get update && \
     apt-get -y install tar curl vim gzip sudo cmake g++ git python3 python3-pip libgtest-dev && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get clean 
+    # && \
+    # rm -rf /var/lib/apt/lists/*
 
 # Install Python packages using pip
 RUN pip3 install cget
@@ -16,7 +17,7 @@ ENV HOME=/home/$USER
 
 RUN useradd -m -s /bin/bash $USER && \
     # Add the user to the admin group (assuming 'sudo' is the admin group)
-    usermod -aG sudo $USER && su - $USER && \
+    usermod -aG sudo $USER && \
     # Change ownership of the working directory to the new user
     chown -R $USER:$USER $HOME
 
