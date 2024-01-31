@@ -4,12 +4,11 @@ FROM ubuntu:22.04
 # Update package lists and install required tools
 RUN apt-get update && \
     apt-get -y install tar curl vim gzip sudo cmake g++ git python3 python3-pip libgtest-dev && \
-    apt-get clean 
-    # && \
-    # rm -rf /var/lib/apt/lists/*
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install Python packages using pip
-RUN pip3 install cget
+# RUN pip3 install cget
 
 # Create a new user
 ENV USER=peter
@@ -31,8 +30,8 @@ WORKDIR $HOME
 USER $USER
 
 # Install additional dependencies using cget
-RUN cget install https://github.com/nlohmann/json/archive/refs/tags/v3.11.3.tar.gz && \
-   cget install https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.gz
+# RUN cget install https://github.com/nlohmann/json/archive/refs/tags/v3.11.3.tar.gz && \
+#    cget install https://github.com/boostorg/boost/releases/download/boost-1.84.0/boost-1.84.0.tar.gz
 
 ARG TOKEN=""
 # The token is supplied by GitHub when a new self-hosted runner is created. 
@@ -43,6 +42,8 @@ RUN mkdir actions-runner && cd actions-runner && \
     ./config.sh --url https://github.com/parandor/samples --token $TOKEN
 
 COPY scripts/init.d/* /etc/init.d/
+
+USER root
 
 # Specify the default command to run on container start
 CMD ["/bin/bash", "-c", "/etc/init.d/boot-script start"]
