@@ -1,7 +1,7 @@
 #!/bin/bash
 apt-get update
 apt-get -y upgrade 
-apt-get -y install g++ git python3 python3-pip libgtest-dev
+apt-get -y install tar curl vim gzip sudo cmake g++ git python3 python3-pip libgtest-dev
 
 # Serialization libraries (JSON for string, boost for binary)
 pip install cget

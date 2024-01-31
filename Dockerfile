@@ -20,9 +20,6 @@ RUN useradd -m -s /bin/bash $USER && \
     # Change ownership of the working directory to the new user
     chown -R $USER:$USER $HOME
 
-# Set a password for the user (replace 'password' with the actual password)
-# RUN echo "${USER}:password" | chpasswd
-
 # Set the working directory to $HOME
 WORKDIR $HOME
 
