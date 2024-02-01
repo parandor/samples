@@ -16,7 +16,6 @@ func TestExampleClient(t *testing.T) {
 	client := pingv1connect.NewPingServiceClient(http.DefaultClient, "http://localhost:8080")
 
 	// Example: Call Ping
-	//pingReq := &v1.PingRequest{Message: "Hello", Counter: 42}
 	pingResp, err := client.Ping(context.Background(),
 		connect.NewRequest(&v1.PingRequest{
 			Message: "Hello world",
