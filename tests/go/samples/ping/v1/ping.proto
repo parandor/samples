@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package tests.go.samples.ping.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// Service definition
+service PingService {
+  // RPC method for pinging the server
+  rpc Ping (PingRequest) returns (PingResponse);
+
+  // RPC method to get information about the server
+  rpc GetServerInfo (GetServerInfoRequest) returns (GetServerInfoResponse);
+}
+
+// Message for the ping request
+message PingRequest {
+  string message = 1;
+  int32 counter = 2;
+}
+
+// Message for the ping response
+message PingResponse {
+  string reply = 1;
+  google.protobuf.Timestamp processed_at = 2;
+}
+
+message GetServerInfoRequest {
+  // Empty message
+}
+
+// Message for server information response
+message GetServerInfoResponse {
+  string server_name = 1;
+  string server_version = 2;
+  google.protobuf.Timestamp current_time = 3;
+}

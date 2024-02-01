@@ -30,6 +30,10 @@ Get the token, follow self-hosted runner instructions below.
 
 Go development tutorial can be found [here](https://code.visualstudio.com/docs/languages/go)
 
+## Buf and Connect
+
+Follow these links to setup [Buf](https://buf.build/docs/installation) and [Connect-go](https://connectrpc.com/docs/go/getting-started/) to auto generate API code from .proto files.
+
 # Run
 
 To execute this module in Linux, run:
