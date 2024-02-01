@@ -14,12 +14,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package assert
+package assert_test
 
 import (
 	"errors"
 	"fmt"
 	"testing"
+
+	a "github.com/parandor/samples/internal/assert"
 )
 
 func TestAssertions(t *testing.T) {
@@ -27,51 +29,51 @@ func TestAssertions(t *testing.T) {
 
 	t.Run("equal", func(t *testing.T) {
 		t.Parallel()
-		Equal(t, 1, 1, Sprintf("1 == %d", 1))
-		NotEqual(t, 1, 2)
+		a.Equal(t, 1, 1, a.Sprintf("1 == %d", 1))
+		a.NotEqual(t, 1, 2)
 	})
 
 	t.Run("nil", func(t *testing.T) {
 		t.Parallel()
-		Nil(t, nil)
-		Nil(t, (*chan int)(nil))
-		Nil(t, (*func())(nil))
-		Nil(t, (*map[int]int)(nil))
-		Nil(t, (*pair)(nil))
-		Nil(t, (*[]int)(nil))
+		a.Nil(t, nil)
+		a.Nil(t, (*chan int)(nil))
+		a.Nil(t, (*func())(nil))
+		a.Nil(t, (*map[int]int)(nil))
+		a.Nil(t, (*pair)(nil))
+		a.Nil(t, (*[]int)(nil))
 
-		NotNil(t, make(chan int))
-		NotNil(t, func() {})
-		NotNil(t, any(1))
-		NotNil(t, make(map[int]int))
-		NotNil(t, &pair{})
-		NotNil(t, make([]int, 0))
+		a.NotNil(t, make(chan int))
+		a.NotNil(t, func() {})
+		a.NotNil(t, any(1))
+		a.NotNil(t, make(map[int]int))
+		a.NotNil(t, &pair{})
+		a.NotNil(t, make([]int, 0))
 
-		NotNil(t, "foo")
-		NotNil(t, 0)
-		NotNil(t, false)
-		NotNil(t, pair{})
+		a.NotNil(t, "foo")
+		a.NotNil(t, 0)
+		a.NotNil(t, false)
+		a.NotNil(t, pair{})
 	})
 
 	t.Run("zero", func(t *testing.T) {
 		t.Parallel()
 		var n *int
-		Zero(t, n)
+		a.Zero(t, n)
 		var p pair
-		Zero(t, p)
+		a.Zero(t, p)
 		var null *pair
-		Zero(t, null)
+		a.Zero(t, null)
 		var s []int
-		Zero(t, s)
+		a.Zero(t, s)
 		var m map[string]string
-		Zero(t, m)
-		NotZero(t, 3)
+		a.Zero(t, m)
+		a.NotZero(t, 3)
 	})
 
 	t.Run("error chain", func(t *testing.T) {
 		t.Parallel()
 		want := errors.New("base error")
-		ErrorIs(t, fmt.Errorf("context: %w", want), want)
+		a.ErrorIs(t, fmt.Errorf("context: %w", want), want)
 	})
 
 	t.Run("unexported fields", func(t *testing.T) {
@@ -79,17 +81,17 @@ func TestAssertions(t *testing.T) {
 		// Two pairs differ only in an unexported field.
 		p1 := pair{1, 2}
 		p2 := pair{1, 3}
-		NotEqual(t, p1, p2)
+		a.NotEqual(t, p1, p2)
 	})
 
 	t.Run("regexp", func(t *testing.T) {
 		t.Parallel()
-		Match(t, "foobar", `^foo`)
+		a.Match(t, "foobar", `^foo`)
 	})
 
 	t.Run("panics", func(t *testing.T) {
 		t.Parallel()
-		Panics(t, func() { panic("testing") }) //nolint:forbidigo
+		a.Panics(t, func() { panic("testing") }) //nolint:forbidigo
 	})
 }
 

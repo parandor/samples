@@ -16,8 +16,12 @@ class TestRunner:
         
     def discover_tests(self):
         if self.language == "go":
-            go_test_files = [os.path.join(root, file) for root, _, files in os.walk(self.test_directory) for file in files if file.endswith("_test.go")]
-            return go_test_files
+            test_files = []
+            for root, _, files in os.walk(".", topdown=False):
+                for file in files:
+                    if file.endswith("_test.go"):
+                        test_files.append(os.path.join(root, file))
+            return test_files
         else:
             test_files = [file for file in os.listdir(self.test_directory) if file.endswith(f".{self.language}")]
             return test_files
