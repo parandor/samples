@@ -16,13 +16,14 @@ service PingService {
 // Message for the ping request
 message PingRequest {
   string message = 1;
-  int32 counter = 2;
+  int32 number = 2;
 }
 
 // Message for the ping response
 message PingResponse {
   string reply = 1;
   google.protobuf.Timestamp processed_at = 2;
+  int32 number = 3;
 }
 
 message GetServerInfoRequest {

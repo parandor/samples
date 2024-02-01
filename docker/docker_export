@@ -1,1 +1,3 @@
-docker export <container_name> > <image_name>.tar
+# $1 - container name
+# $2 - output image filename
+docker export $1 > $2.tar
