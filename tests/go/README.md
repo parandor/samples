@@ -17,3 +17,20 @@
 | **Documentation**        | Adding Comments to Code, Basic README Files               | Godoc Usage, Markdown Documentation                      | Documenting APIs with OpenAPI, Extensive Code Documentation  |
 | **Code Review**          | Participating in Code Reviews, Addressing Feedback        | Enforcing Code Styles with Linters, Automated Checks    | Setting Code Review Guidelines, Mentorship in Code Reviews  |
 | **Open Source Contribution**| Forking Repositories, Creating Issues                   | Submitting Pull Requests, Collaborating with Maintainers | Initiating and Leading Open Source Projects, Code Ownership  |
+
+# 12-Factor Principles for Quality Go Code in Production
+
+| Rule                | Explanation                                                                         | Example Project Details                                      |
+|---------------------|-------------------------------------------------------------------------------------|-----------------------------------------------------------------|
+| **Codebase**        | Keep the codebase in a single code repository for easy versioning and collaboration. | Single Git repository on GitHub: `github.com/yourusername/gotaskmanager` |
+| **Dependencies**    | Explicitly declare and isolate dependencies, ensuring reproducibility in different environments.| Use Go modules to manage dependencies (`go.mod` and `go.sum` files). Explicitly list and version dependencies. |
+| **Config**          | Store configuration in environment variables, allowing easy configuration changes without code modification.| Store configuration settings in environment variables. Utilize a configuration package to read environment variables. |
+| **Backing Services**| Treat backing services (databases, caches) as attached resources, accessed through environmental variables.| Connect to a PostgreSQL database for data storage. Use environment variables for database connection details. |
+| **Build, Release, Run**| Strictly separate the build, release, and run stages to maintain reproducibility and consistency.| Use a CI/CD pipeline (e.g., GitHub Actions) to build, test, and release the application. Build a Docker image for the application, pushing it to a container registry. |
+| **Processes**       | Execute the application as one or more stateless processes to enable scalability and fault tolerance.| Design the application as a stateless HTTP server using the Gorilla Mux router. Leverage Goroutines for concurrency and scalability. |
+| **Port Binding**    | Export services via port binding, making the application self-contained and easily scalable.| Export services through HTTP on a specified port (e.g., `:8080`). |
+| **Concurrency**     | Scale out via the process model, allowing concurrency by running multiple processes.| Implement concurrent processing using Goroutines and channels. |
+| **Disposability**   | Design applications for quick startup and graceful shutdown, enhancing scalability and resilience.| Gracefully handle shutdown signals for quick and clean termination. Utilize logging to capture any unexpected issues. |
+| **Dev/Prod Parity** | Maintain consistency between development and production environments to avoid unexpected issues.| Use Docker for local development to maintain environment consistency. Mimic production settings in local development. |
+| **Logs**            | Treat logs as event streams, aiding in monitoring, debugging, and troubleshooting.| Implement structured logging using a logging library (e.g., Logrus). Stream logs to a centralized logging service (e.g., ELK stack). |
+| **Admin Processes** | Run administrative and management tasks as one-off processes, keeping the main application focused on its core functionality.| Implement one-off admin processes using CLI tools for tasks like database migrations. |
