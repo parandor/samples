@@ -10,9 +10,10 @@ class MarkdownLinkChecker:
     def is_valid_link(self, link):
         # Ignore links starting with "http" as they are assumed to be external URLs
         if link.startswith('http') or link.startswith('\\'):
-            return True
+            return True, None
         # Ignore links if they exist, and prepend path to readme 
-        return os.path.exists(self.directory_path + link)
+        full_path = os.path.join(self.directory_path, link)
+        return os.path.exists(full_path), self.directory_path
 
     def check_markdown_links(self):
         invalid_links = []
@@ -25,8 +26,9 @@ class MarkdownLinkChecker:
         matches = link_pattern.findall(content)
 
         for link in matches:
-            if not self.is_valid_link(link):
-                invalid_links.append(link)
+            is_valid, full_path = self.is_valid_link(link)
+            if not is_valid:
+                invalid_links.append((link, full_path) if full_path else link)
 
         return invalid_links
 
@@ -53,7 +55,10 @@ def main():
     if invalid_links:
         print("Invalid links found:")
         for link in invalid_links:
-            print(link)
+            if isinstance(link, tuple):
+                print(f"Link: {link[0]}, Path: {link[1]}README.md")
+            else:
+                print(f"Link: {link}")
         exit(1)
     else:
         print("All links are valid.")
