@@ -24,7 +24,7 @@ func (h *MyPingServiceHandler) Ping(ctx context.Context, req *connect.Request[v1
 		Msg: &v1.PingResponse{
 			Reply:       req.Msg.Message + "World",
 			ProcessedAt: timestamppb.New(time.Now()),
-			Number: req.Msg.Number,
+			Number:      req.Msg.Number,
 		},
 	}
 	return response, nil
