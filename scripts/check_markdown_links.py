@@ -7,7 +7,8 @@ class MarkdownLinkChecker:
         self.markdown_path = markdown_path
 
     def is_valid_link(self, link):
-        return os.path.exists(link)
+        # Ignore links starting with "http" as they are assumed to be external URLs
+        return link.startswith('http') or os.path.exists(link)
 
     def check_markdown_links(self):
         invalid_links = []
