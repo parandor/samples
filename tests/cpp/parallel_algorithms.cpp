@@ -26,102 +26,105 @@
  * Note: Parallelism effectiveness depends on the specific use case and the underlying hardware.
  */
 
-// Parallel for_each
-TEST(ParallelAlgorithmsTest, ParallelForEach)
+namespace
 {
-    std::vector<int> vec = {1, 2, 3, 4, 5};
-
-    // Beginner level: Multiply each element by 2 in parallel
-    std::for_each(std::execution::par, vec.begin(), vec.end(), [](int &num)
-                  { num *= 2; });
-
-    // Check the modified vector
-    auto expected = std::vector<int>{2, 4, 6, 8, 10};
-    ASSERT_EQ(vec, expected);
-}
-
-// Parallel transform
-TEST(ParallelAlgorithmsTest, ParallelTransform)
-{
-    std::vector<int> vec = {1, 2, 3, 4, 5};
-    std::vector<int> result(vec.size());
-
-    // Intermediate level: Square each element in parallel
-    std::transform(std::execution::par, vec.begin(), vec.end(), result.begin(), [](int num)
-                   { return num * num; });
-
-    // Check the result vector
-    auto expected = std::vector<int>{1, 4, 9, 16, 25};
-    ASSERT_EQ(result, expected);
-}
-
-// Parallel reduce
-TEST(ParallelAlgorithmsTest, ParallelReduce)
-{
-    std::vector<int> vec = {1, 2, 3, 4, 5};
-
-    // Beginner level: Calculate the sum of elements in parallel
-    int sum = std::reduce(std::execution::par, vec.begin(), vec.end());
-
-    // Check the sum
-    ASSERT_EQ(sum, 15);
-}
-
-// Test fixture class template
-template <typename T>
-class TransformReduceTest : public ::testing::Test
-{
-protected:
-    // Helper function to calculate the product of squares of odd numbers
-    T calculateProductOfSquaresOfOdds(const std::vector<T> &vec)
+    // Parallel for_each
+    TEST(ParallelAlgorithmsTest, ParallelForEach)
     {
-        return std::transform_reduce(
-            vec.begin(), vec.end(),
-            T(1),                 // Default value for the binary operation (identity element for multiplication)
-            std::multiplies<T>(), // Binary operation (multiplication)
-            // static cast to handle int, float, double
-            [](T num)
-            { return (static_cast<int>(num) % 2 == 1) ? num * num : T(1); } // Unary operation for odd numbers
-        );
+        std::vector<int> vec = {1, 2, 3, 4, 5};
+
+        // Beginner level: Multiply each element by 2 in parallel
+        std::for_each(std::execution::par, vec.begin(), vec.end(), [](int &num)
+                      { num *= 2; });
+
+        // Check the modified vector
+        auto expected = std::vector<int>{2, 4, 6, 8, 10};
+        ASSERT_EQ(vec, expected);
     }
-};
 
-// In Google Test, TYPED_TEST_SUITE and TYPED_TEST are macros used for creating typed test
-// fixtures and test cases that can be parameterized over multiple types. This allows you to
-// write test logic that can be reused for different types, enhancing code coverage and
-// promoting code reuse.
+    // Parallel transform
+    TEST(ParallelAlgorithmsTest, ParallelTransform)
+    {
+        std::vector<int> vec = {1, 2, 3, 4, 5};
+        std::vector<int> result(vec.size());
 
-// Define a typed test fixture
-typedef ::testing::Types<unsigned, short, int, float, double> MyTypes;
-TYPED_TEST_SUITE(TransformReduceTest, MyTypes);
+        // Intermediate level: Square each element in parallel
+        std::transform(std::execution::par, vec.begin(), vec.end(), result.begin(), [](int num)
+                       { return num * num; });
 
-// Test case using typed test fixture
-TYPED_TEST(TransformReduceTest, ProductOfSquaresOfOdds)
-{
-    std::vector<TypeParam> vec = {1, 2, 3, 4, 5};
+        // Check the result vector
+        auto expected = std::vector<int>{1, 4, 9, 16, 25};
+        ASSERT_EQ(result, expected);
+    }
 
-    // Expected value calculation
-    TypeParam expectedValue = 1 * 9 * 25;
+    // Parallel reduce
+    TEST(ParallelAlgorithmsTest, ParallelReduce)
+    {
+        std::vector<int> vec = {1, 2, 3, 4, 5};
 
-    // Calculate the actual value
-    TypeParam actualValue = this->calculateProductOfSquaresOfOdds(vec);
+        // Beginner level: Calculate the sum of elements in parallel
+        int sum = std::reduce(std::execution::par, vec.begin(), vec.end());
 
-    // Check the result using ASSERT_EQ
-    ASSERT_EQ(actualValue, expectedValue);
-}
+        // Check the sum
+        ASSERT_EQ(sum, 15);
+    }
 
-// Parallel inclusive_scan
-TEST(ParallelAlgorithmsTest, ParallelInclusiveScan)
-{
-    std::vector<int> vec = {1, 2, 3, 4, 5};
-    std::vector<int> result(vec.size());
+    // Test fixture class template
+    template <typename T>
+    class TransformReduceTest : public ::testing::Test
+    {
+    protected:
+        // Helper function to calculate the product of squares of odd numbers
+        T calculateProductOfSquaresOfOdds(const std::vector<T> &vec)
+        {
+            return std::transform_reduce(
+                vec.begin(), vec.end(),
+                T(1),                 // Default value for the binary operation (identity element for multiplication)
+                std::multiplies<T>(), // Binary operation (multiplication)
+                // static cast to handle int, float, double
+                [](T num)
+                { return (static_cast<int>(num) % 2 == 1) ? num * num : T(1); } // Unary operation for odd numbers
+            );
+        }
+    };
 
-    // Advanced level: Perform parallel inclusive scan
-    std::inclusive_scan(std::execution::par, vec.begin(), vec.end(), result.begin());
+    // In Google Test, TYPED_TEST_SUITE and TYPED_TEST are macros used for creating typed test
+    // fixtures and test cases that can be parameterized over multiple types. This allows you to
+    // write test logic that can be reused for different types, enhancing code coverage and
+    // promoting code reuse.
 
-    // Check the result vector
-    auto expected = std::vector<int>{1, 3, 6, 10, 15};
-    ASSERT_EQ(result, expected);
+    // Define a typed test fixture
+    typedef ::testing::Types<unsigned, short, int, float, double> MyTypes;
+    TYPED_TEST_SUITE(TransformReduceTest, MyTypes);
+
+    // Test case using typed test fixture
+    TYPED_TEST(TransformReduceTest, ProductOfSquaresOfOdds)
+    {
+        std::vector<TypeParam> vec = {1, 2, 3, 4, 5};
+
+        // Expected value calculation
+        TypeParam expectedValue = 1 * 9 * 25;
+
+        // Calculate the actual value
+        TypeParam actualValue = this->calculateProductOfSquaresOfOdds(vec);
+
+        // Check the result using ASSERT_EQ
+        ASSERT_EQ(actualValue, expectedValue);
+    }
+
+    // Parallel inclusive_scan
+    TEST(ParallelAlgorithmsTest, ParallelInclusiveScan)
+    {
+        std::vector<int> vec = {1, 2, 3, 4, 5};
+        std::vector<int> result(vec.size());
+
+        // Advanced level: Perform parallel inclusive scan
+        std::inclusive_scan(std::execution::par, vec.begin(), vec.end(), result.begin());
+
+        // Check the result vector
+        auto expected = std::vector<int>{1, 3, 6, 10, 15};
+        ASSERT_EQ(result, expected);
+    }
 }
 
 int main(int argc, char **argv)

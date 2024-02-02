@@ -13,298 +13,303 @@
 #include <vector>
 #include <gtest/gtest.h>
 
-// Test 1: Basic Thread Creation and Joining
-TEST(ConcurrencyTest, BasicThreadCreationAndJoining)
+namespace
 {
-    std::thread t([]
-                  {
+    // Test 1: Basic Thread Creation and Joining
+    TEST(ConcurrencyTest, BasicThreadCreationAndJoining)
+    {
+        std::thread t([]
+                      {
         // Your threaded code here
         std::cout << "Thread executing." << std::endl; });
 
-    t.join();          // Wait for the thread to finish
-    ASSERT_TRUE(true); // Placeholder assertion to avoid test failure due to no assertions
-}
+        t.join();          // Wait for the thread to finish
+        ASSERT_TRUE(true); // Placeholder assertion to avoid test failure due to no assertions
+    }
 
-// Test 2: Parallel Accumulation with Multiple Threads
-TEST(ConcurrencyTest, ParallelAccumulationWithMultipleThreads)
-{
-    const int dataSize = 100000;
-    std::vector<int> data(dataSize, 1);
-
-    const size_t numThreads = std::thread::hardware_concurrency();
-    std::vector<std::thread> threads;
-    std::vector<int> partialSums(numThreads, 0);
-
-    // Divide the data among threads
-    for (size_t i = 0; i < numThreads; ++i)
+    // Test 2: Parallel Accumulation with Multiple Threads
+    TEST(ConcurrencyTest, ParallelAccumulationWithMultipleThreads)
     {
-        threads.emplace_back([i, &data, &partialSums, numThreads]
-                             {
+        const int dataSize = 100000;
+        std::vector<int> data(dataSize, 1);
+
+        const size_t numThreads = std::thread::hardware_concurrency();
+        std::vector<std::thread> threads;
+        std::vector<int> partialSums(numThreads, 0);
+
+        // Divide the data among threads
+        for (size_t i = 0; i < numThreads; ++i)
+        {
+            threads.emplace_back([i, &data, &partialSums, numThreads]
+                                 {
             size_t chunkSize = data.size() / numThreads;
             size_t start = i * chunkSize;
             size_t end = (i == numThreads - 1) ? data.size() : (i + 1) * chunkSize;
 
             // Perform partial accumulation
             partialSums[i] = std::accumulate(data.begin() + start, data.begin() + end, 0); });
+        }
+
+        // Wait for all threads to finish
+        for (auto &thread : threads)
+        {
+            thread.join();
+        }
+
+        // Combine partial results
+        int totalSum = std::accumulate(partialSums.begin(), partialSums.end(), 0);
+
+        // Check if the total sum is correct
+        EXPECT_EQ(totalSum, dataSize);
     }
 
-    // Wait for all threads to finish
-    for (auto &thread : threads)
+    // Test 3: Data Sharing and Synchronization with std::mutex
+    TEST(ConcurrencyTest, DataSharingAndSynchronizationWithMutex)
     {
-        thread.join();
-    }
+        std::vector<int> sharedData;
+        std::mutex dataMutex;
 
-    // Combine partial results
-    int totalSum = std::accumulate(partialSums.begin(), partialSums.end(), 0);
+        const int numIterations = 10000;
+        const int incrementValue = 1;
 
-    // Check if the total sum is correct
-    EXPECT_EQ(totalSum, dataSize);
-}
+        std::vector<std::thread> threads;
 
-// Test 3: Data Sharing and Synchronization with std::mutex
-TEST(ConcurrencyTest, DataSharingAndSynchronizationWithMutex)
-{
-    std::vector<int> sharedData;
-    std::mutex dataMutex;
-
-    const int numIterations = 10000;
-    const int incrementValue = 1;
-
-    std::vector<std::thread> threads;
-
-    for (int i = 0; i < numIterations; ++i)
-    {
-        threads.emplace_back([&sharedData, &dataMutex, incrementValue]
-                             {
+        for (int i = 0; i < numIterations; ++i)
+        {
+            threads.emplace_back([&sharedData, &dataMutex, incrementValue]
+                                 {
             std::lock_guard<std::mutex> lock(dataMutex); // Lock to ensure exclusive access
             sharedData.push_back(incrementValue); });
+        }
+
+        for (auto &thread : threads)
+        {
+            thread.join();
+        }
+
+        // Check if the size of sharedData matches the expected size
+        EXPECT_EQ(sharedData.size(), numIterations);
     }
 
-    for (auto &thread : threads)
+    // Test 4: Parallel Sort with std::thread
+    TEST(ConcurrencyTest, ParallelSortWithThread)
     {
-        thread.join();
-    }
+        const int dataSize = 1000000;
+        std::vector<int> data(dataSize);
 
-    // Check if the size of sharedData matches the expected size
-    EXPECT_EQ(sharedData.size(), numIterations);
-}
+        // Fill the vector with random values
+        std::generate(data.begin(), data.end(), []
+                      { return rand(); });
 
-// Test 4: Parallel Sort with std::thread
-TEST(ConcurrencyTest, ParallelSortWithThread)
-{
-    const int dataSize = 1000000;
-    std::vector<int> data(dataSize);
+        const size_t numThreads = std::thread::hardware_concurrency();
+        std::vector<std::thread> threads;
 
-    // Fill the vector with random values
-    std::generate(data.begin(), data.end(), []
-                  { return rand(); });
-
-    const size_t numThreads = std::thread::hardware_concurrency();
-    std::vector<std::thread> threads;
-
-    // Divide the data among threads
-    for (size_t i = 0; i < numThreads; ++i)
-    {
-        threads.emplace_back([i, &data, numThreads]
-                             {
+        // Divide the data among threads
+        for (size_t i = 0; i < numThreads; ++i)
+        {
+            threads.emplace_back([i, &data, numThreads]
+                                 {
             size_t chunkSize = data.size() / numThreads;
             size_t start = i * chunkSize;
             size_t end = (i == numThreads - 1) ? data.size() : (i + 1) * chunkSize;
 
             // Perform partial sort
             std::sort(data.begin() + start, data.begin() + end); });
-    }
-
-    // Wait for all threads to finish
-    for (auto &thread : threads)
-    {
-        thread.join();
-    }
-
-    // Merge the sorted chunks
-    std::sort(data.begin(), data.end());
-
-    // Check if the data is sorted
-    EXPECT_TRUE(std::is_sorted(data.begin(), data.end()));
-}
-
-template <typename T>
-class SharedBuffer
-{
-public:
-    void push(const T &item)
-    {
-        std::unique_lock<std::mutex> lock(mutex_);
-        buffer_.push(item);
-        lock.unlock();
-        condition_.notify_one();
-    }
-
-    std::optional<T> pop()
-    {
-        std::unique_lock<std::mutex> lock(mutex_);
-        condition_.wait(lock, [this]
-                        { return !buffer_.empty(); });
-
-        if (!buffer_.empty())
-        {
-            T item = std::move(buffer_.front());
-            buffer_.pop();
-            return std::optional<T>(std::move(item));
         }
 
-        return std::nullopt; // Represents the absence of a value
-    }
-
-    size_t size() const
-    {
-        std::unique_lock<std::mutex> lock(mutex_);
-        return buffer_.size();
-    }
-
-    std::vector<T> buffer() {
-        std::unique_lock<std::mutex> lock(mutex_);
-        std::vector<T> tempVector;
-        while (!buffer_.empty()) {
-            tempVector.push_back(std::move(buffer_.front()));
-            buffer_.pop();
-        }
-        return tempVector;
-    }
-
-    void clear()
-    {
-        std::unique_lock<std::mutex> lock(mutex_);
-        while (!buffer_.empty())
+        // Wait for all threads to finish
+        for (auto &thread : threads)
         {
-            buffer_.pop();
+            thread.join();
         }
+
+        // Merge the sorted chunks
+        std::sort(data.begin(), data.end());
+
+        // Check if the data is sorted
+        EXPECT_TRUE(std::is_sorted(data.begin(), data.end()));
     }
 
-private:
-    std::queue<T> buffer_;
-    mutable std::mutex mutex_;
-    std::condition_variable condition_;
-};
-
-class ProducerConsumerTest : public ::testing::Test
-{
-protected:
-    void SetUp() override
+    template <typename T>
+    class SharedBuffer
     {
-        // Reset any shared resources or variables
-        sharedBuffer.clear();
-    }
-
-    SharedBuffer<int> sharedBuffer;
-    const int numItems = 10;
-};
-
-class Producer
-{
-public:
-    Producer(SharedBuffer<int> &buffer, int id, int numItems) : buffer_(buffer), id_(id), numItems_(numItems) {}
-
-    void operator()()
-    {
-        for (int i = 0; i < numItems_; ++i)
+    public:
+        void push(const T &item)
         {
-            buffer_.push(id_ * numItems_ + i);
-            std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Simulate some work
+            std::unique_lock<std::mutex> lock(mutex_);
+            buffer_.push(item);
+            lock.unlock();
+            condition_.notify_one();
         }
-    }
 
-private:
-    SharedBuffer<int> &buffer_;
-    int id_;
-    int numItems_;
-};
-
-class Consumer
-{
-public:
-    Consumer(SharedBuffer<int> &buffer, SharedBuffer<int> &results, int numItems)
-        : buffer_(buffer), results_(results), numItems_(numItems) {}
-
-    void operator()()
-    {
-        while (true)
+        std::optional<T> pop()
         {
-            // Example usage
-            auto result = buffer_.pop();
-            // Check for the sentinel value (-1) to signal end of production
-            if (!result || result == -1)
+            std::unique_lock<std::mutex> lock(mutex_);
+            condition_.wait(lock, [this]
+                            { return !buffer_.empty(); });
+
+            if (!buffer_.empty())
             {
-                break;
+                T item = std::move(buffer_.front());
+                buffer_.pop();
+                return std::optional<T>(std::move(item));
             }
-            
-            results_.push(result.value());
-            std::this_thread::sleep_for(std::chrono::milliseconds(5)); // Simulate some work
+
+            return std::nullopt; // Represents the absence of a value
         }
-    }
 
-private:
-    SharedBuffer<int> &buffer_;
-    SharedBuffer<int> &results_;
-    int numItems_;
-};
+        size_t size() const
+        {
+            std::unique_lock<std::mutex> lock(mutex_);
+            return buffer_.size();
+        }
 
-// The Producer object is instantiated and its overloaded operator() method is executed
-// when the std::thread is created. The std::thread constructor takes the Producer object
-// as a parameter and internally calls its operator(). This creates a new thread of execution
-// that runs the operator() method.
-//
-// So, when you add a Producer object to the vector of threads, a new thread is spawned,
-// and it starts executing the operator() method of the Producer object in a separate thread.
-TEST_F(ProducerConsumerTest, ProducerConsumerInteraction)
-{
-    const int numProducers = 2;
-    const int numConsumers = 3;
+        std::vector<T> buffer()
+        {
+            std::unique_lock<std::mutex> lock(mutex_);
+            std::vector<T> tempVector;
+            while (!buffer_.empty())
+            {
+                tempVector.push_back(std::move(buffer_.front()));
+                buffer_.pop();
+            }
+            return tempVector;
+        }
 
-    std::vector<std::thread> producerThreads;
-    std::vector<std::thread> consumerThreads;
-    SharedBuffer<int> results;
+        void clear()
+        {
+            std::unique_lock<std::mutex> lock(mutex_);
+            while (!buffer_.empty())
+            {
+                buffer_.pop();
+            }
+        }
 
-    // Create producer threads
-    for (int i = 0; i < numProducers; ++i)
+    private:
+        std::queue<T> buffer_;
+        mutable std::mutex mutex_;
+        std::condition_variable condition_;
+    };
+
+    class ProducerConsumerTest : public ::testing::Test
     {
-        producerThreads.emplace_back(Producer(sharedBuffer, i, numItems));
-    }
+    protected:
+        void SetUp() override
+        {
+            // Reset any shared resources or variables
+            sharedBuffer.clear();
+        }
 
-    // Create consumer threads
-    for (int i = 0; i < numConsumers; ++i)
+        SharedBuffer<int> sharedBuffer;
+        const int numItems = 10;
+    };
+
+    class Producer
     {
-        consumerThreads.emplace_back(Consumer(sharedBuffer, results, numItems));
-    }
+    public:
+        Producer(SharedBuffer<int> &buffer, int id, int numItems) : buffer_(buffer), id_(id), numItems_(numItems) {}
 
-    // Join producer threads
-    for (auto &thread : producerThreads)
+        void operator()()
+        {
+            for (int i = 0; i < numItems_; ++i)
+            {
+                buffer_.push(id_ * numItems_ + i);
+                std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Simulate some work
+            }
+        }
+
+    private:
+        SharedBuffer<int> &buffer_;
+        int id_;
+        int numItems_;
+    };
+
+    class Consumer
     {
-        thread.join();
-    }
+    public:
+        Consumer(SharedBuffer<int> &buffer, SharedBuffer<int> &results, int numItems)
+            : buffer_(buffer), results_(results), numItems_(numItems) {}
 
-    // Notify consumers that no more items will be produced
-    for (int i = 0; i < numConsumers; ++i)
+        void operator()()
+        {
+            while (true)
+            {
+                // Example usage
+                auto result = buffer_.pop();
+                // Check for the sentinel value (-1) to signal end of production
+                if (!result || result == -1)
+                {
+                    break;
+                }
+
+                results_.push(result.value());
+                std::this_thread::sleep_for(std::chrono::milliseconds(5)); // Simulate some work
+            }
+        }
+
+    private:
+        SharedBuffer<int> &buffer_;
+        SharedBuffer<int> &results_;
+        int numItems_;
+    };
+
+    // The Producer object is instantiated and its overloaded operator() method is executed
+    // when the std::thread is created. The std::thread constructor takes the Producer object
+    // as a parameter and internally calls its operator(). This creates a new thread of execution
+    // that runs the operator() method.
+    //
+    // So, when you add a Producer object to the vector of threads, a new thread is spawned,
+    // and it starts executing the operator() method of the Producer object in a separate thread.
+    TEST_F(ProducerConsumerTest, ProducerConsumerInteraction)
     {
-        sharedBuffer.push(-1);
-    }
+        const int numProducers = 2;
+        const int numConsumers = 3;
 
-    // Join consumer threads
-    for (auto &thread : consumerThreads)
-    {
-        thread.join();
-    }
+        std::vector<std::thread> producerThreads;
+        std::vector<std::thread> consumerThreads;
+        SharedBuffer<int> results;
 
-    // Check if all expected items are present in the results
-    auto copy = results.buffer();
-    std::sort(copy.begin(), copy.end());
-    std::vector<int> expectedResults;
-    for (int i = 0; i < numProducers * numItems; ++i)
-    {
-        expectedResults.push_back(i);
-    }
+        // Create producer threads
+        for (int i = 0; i < numProducers; ++i)
+        {
+            producerThreads.emplace_back(Producer(sharedBuffer, i, numItems));
+        }
 
-    ASSERT_EQ(copy, expectedResults);
+        // Create consumer threads
+        for (int i = 0; i < numConsumers; ++i)
+        {
+            consumerThreads.emplace_back(Consumer(sharedBuffer, results, numItems));
+        }
+
+        // Join producer threads
+        for (auto &thread : producerThreads)
+        {
+            thread.join();
+        }
+
+        // Notify consumers that no more items will be produced
+        for (int i = 0; i < numConsumers; ++i)
+        {
+            sharedBuffer.push(-1);
+        }
+
+        // Join consumer threads
+        for (auto &thread : consumerThreads)
+        {
+            thread.join();
+        }
+
+        // Check if all expected items are present in the results
+        auto copy = results.buffer();
+        std::sort(copy.begin(), copy.end());
+        std::vector<int> expectedResults;
+        for (int i = 0; i < numProducers * numItems; ++i)
+        {
+            expectedResults.push_back(i);
+        }
+
+        ASSERT_EQ(copy, expectedResults);
+    }
 }
 
 int main(int argc, char **argv)

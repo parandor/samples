@@ -43,77 +43,86 @@
 #include <memory_resource>
 #include <vector>
 
-// Custom Allocator Example
-template <typename T>
-struct CustomAllocator
+namespace
 {
-    using value_type = T;
-
-    T *allocate(std::size_t n)
+    // Custom Allocator Example
+    template <typename T>
+    struct CustomAllocator
     {
-        std::cout << "Custom allocation for " << n << " objects\n";
-        return static_cast<T *>(::operator new(n * sizeof(T)));
+        using value_type = T;
+
+        T *allocate(std::size_t n)
+        {
+            std::cout << "Custom allocation for " << n << " objects\n";
+            return static_cast<T *>(::operator new(n * sizeof(T)));
+        }
+
+        void deallocate(T *p, std::size_t n)
+        {
+            std::cout << "Custom deallocation for " << n << " objects\n";
+            ::operator delete(p);
+        }
+    };
+
+    /*
+     * Test 1: `StdAllocatorSingleObject`
+     *   - Allocates and deallocates a single integer using `std::allocator`.
+     */
+    TEST(MemoryAllocation, StdAllocatorSingleObject)
+    {
+        std::allocator<int> allocator;
+
+        int *value = allocator.allocate(1);
+        *value = 42;
+
+        EXPECT_EQ(*value, 42);
+
+        allocator.deallocate(value, 1);
     }
 
-    void deallocate(T *p, std::size_t n)
+    /*
+     * Test 2: `CustomAllocatorInVector`
+     *   - Uses a custom allocator (`CustomAllocator`) with a `std::vector` to manage memory for integers.
+     */
+    TEST(MemoryAllocation, CustomAllocatorInVector)
     {
-        std::cout << "Custom deallocation for " << n << " objects\n";
-        ::operator delete(p);
+        std::vector<int, CustomAllocator<int>> customVector;
+
+        customVector.push_back(1);
+        customVector.push_back(2);
+        customVector.push_back(3);
+
+        ASSERT_EQ(customVector.size(), 3);
+        EXPECT_EQ(customVector[0], 1);
+        EXPECT_EQ(customVector[1], 2);
+        EXPECT_EQ(customVector[2], 3);
     }
-};
 
-/*
- * Test 1: `StdAllocatorSingleObject`
- *   - Allocates and deallocates a single integer using `std::allocator`.
- */
-TEST(MemoryAllocation, StdAllocatorSingleObject)
-{
-    std::allocator<int> allocator;
+    /*
+     * Test 3: `PolymorphicAllocator`
+     *   - Allocates and deallocates a single integer using `std::pmr::polymorphic_allocator`, demonstrating polymorphic memory allocation.
+     */
+    TEST(MemoryAllocation, PolymorphicAllocator)
+    {
+        // Create a polymorphic allocator using the default memory resource
+        std::pmr::polymorphic_allocator<int> polyAllocator(std::pmr::get_default_resource());
 
-    int *value = allocator.allocate(1);
-    *value = 42;
+        // Allocate memory for an integer
+        int *value = polyAllocator.allocate(1);
 
-    EXPECT_EQ(*value, 42);
+        // Construct the integer with a value
+        polyAllocator.construct(value, 42);
 
-    allocator.deallocate(value, 1);
+        // Expect the value to be 42
+        EXPECT_EQ(*value, 42);
+
+        // Deallocate the memory
+        polyAllocator.deallocate(value, 1);
+    }
 }
 
-/*
- * Test 2: `CustomAllocatorInVector`
- *   - Uses a custom allocator (`CustomAllocator`) with a `std::vector` to manage memory for integers.
- */
-TEST(MemoryAllocation, CustomAllocatorInVector)
+int main(int argc, char **argv)
 {
-    std::vector<int, CustomAllocator<int>> customVector;
-
-    customVector.push_back(1);
-    customVector.push_back(2);
-    customVector.push_back(3);
-
-    ASSERT_EQ(customVector.size(), 3);
-    EXPECT_EQ(customVector[0], 1);
-    EXPECT_EQ(customVector[1], 2);
-    EXPECT_EQ(customVector[2], 3);
-}
-
-/*
- * Test 3: `PolymorphicAllocator`
- *   - Allocates and deallocates a single integer using `std::pmr::polymorphic_allocator`, demonstrating polymorphic memory allocation.
- */
-TEST(MemoryAllocation, PolymorphicAllocator)
-{
-    // Create a polymorphic allocator using the default memory resource
-    std::pmr::polymorphic_allocator<int> polyAllocator(std::pmr::get_default_resource());
-
-    // Allocate memory for an integer
-    int *value = polyAllocator.allocate(1);
-
-    // Construct the integer with a value
-    polyAllocator.construct(value, 42);
-
-    // Expect the value to be 42
-    EXPECT_EQ(*value, 42);
-
-    // Deallocate the memory
-    polyAllocator.deallocate(value, 1);
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

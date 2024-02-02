@@ -27,93 +27,115 @@
 #include <gtest/gtest.h>
 #include <memory>
 
-// Product interface
-class Product {
-public:
-    virtual ~Product() = default;
-    virtual std::string getName() const = 0;
-    virtual int getPrice() const = 0;
-};
+namespace
+{
+    // Product interface
+    class Product
+    {
+    public:
+        virtual ~Product() = default;
+        virtual std::string getName() const = 0;
+        virtual int getPrice() const = 0;
+    };
 
-// Concrete Product A
-class ConcreteProductA : public Product {
-public:
-    std::string getName() const override { return "Product A"; }
-    int getPrice() const override { return 100; }
-};
+    // Concrete Product A
+    class ConcreteProductA : public Product
+    {
+    public:
+        std::string getName() const override { return "Product A"; }
+        int getPrice() const override { return 100; }
+    };
 
-// Concrete Product B
-class ConcreteProductB : public Product {
-public:
-    std::string getName() const override { return "Product B"; }
-    int getPrice() const override { return 150; }
-};
+    // Concrete Product B
+    class ConcreteProductB : public Product
+    {
+    public:
+        std::string getName() const override { return "Product B"; }
+        int getPrice() const override { return 150; }
+    };
 
-// Factory interface
-class Factory {
-public:
-    virtual std::unique_ptr<Product> createProduct() const = 0;
-};
+    // Factory interface
+    class Factory
+    {
+    public:
+        virtual std::unique_ptr<Product> createProduct() const = 0;
+    };
 
-// Concrete Factory A
-class ConcreteFactoryA : public Factory {
-public:
-    std::unique_ptr<Product> createProduct() const override {
-        return std::make_unique<ConcreteProductA>();
+    // Concrete Factory A
+    class ConcreteFactoryA : public Factory
+    {
+    public:
+        std::unique_ptr<Product> createProduct() const override
+        {
+            return std::make_unique<ConcreteProductA>();
+        }
+    };
+
+    // Concrete Factory B
+    class ConcreteFactoryB : public Factory
+    {
+    public:
+        std::unique_ptr<Product> createProduct() const override
+        {
+            return std::make_unique<ConcreteProductB>();
+        }
+    };
+
+    // GUnit Tests
+
+    // Test Factory A with Product A
+    TEST(FactoryPatternTests, FactoryAProductATest)
+    {
+        ConcreteFactoryA factoryA;
+        auto product = factoryA.createProduct();
+        ASSERT_EQ(product->getName(), "Product A");
+        ASSERT_EQ(product->getPrice(), 100);
     }
-};
 
-// Concrete Factory B
-class ConcreteFactoryB : public Factory {
-public:
-    std::unique_ptr<Product> createProduct() const override {
-        return std::make_unique<ConcreteProductB>();
+    // Test Factory B with Product B
+    TEST(FactoryPatternTests, FactoryBProductBTest)
+    {
+        ConcreteFactoryB factoryB;
+        auto product = factoryB.createProduct();
+        ASSERT_EQ(product->getName(), "Product B");
+        ASSERT_EQ(product->getPrice(), 150);
     }
-};
 
-// GUnit Tests
+    // Test Factory A with Product B (using polymorphism)
+    TEST(FactoryPatternTests, FactoryAProductBTest)
+    {
+        std::unique_ptr<Factory> factory = std::make_unique<ConcreteFactoryA>();
+        auto product = factory->createProduct();
+        ASSERT_EQ(product->getName(), "Product A");
+        ASSERT_EQ(product->getPrice(), 100);
+    }
 
-// Test Factory A with Product A
-TEST(FactoryPatternTests, FactoryAProductATest) {
-    ConcreteFactoryA factoryA;
-    auto product = factoryA.createProduct();
-    ASSERT_EQ(product->getName(), "Product A");
-    ASSERT_EQ(product->getPrice(), 100);
+    // Test Factory B with Product A (using polymorphism)
+    TEST(FactoryPatternTests, FactoryBProductATest)
+    {
+        std::unique_ptr<Factory> factory = std::make_unique<ConcreteFactoryB>();
+        auto product = factory->createProduct();
+        ASSERT_EQ(product->getName(), "Product B");
+        ASSERT_EQ(product->getPrice(), 150);
+    }
+
+    // Test dynamic switching of factories
+    TEST(FactoryPatternTests, DynamicFactorySwitchTest)
+    {
+        std::unique_ptr<Factory> factory;
+
+        factory = std::make_unique<ConcreteFactoryA>();
+        auto productA = factory->createProduct();
+        ASSERT_EQ(productA->getName(), "Product A");
+
+        factory = std::make_unique<ConcreteFactoryB>();
+        auto productB = factory->createProduct();
+        ASSERT_EQ(productB->getName(), "Product B");
+    }
 }
 
-// Test Factory B with Product B
-TEST(FactoryPatternTests, FactoryBProductBTest) {
-    ConcreteFactoryB factoryB;
-    auto product = factoryB.createProduct();
-    ASSERT_EQ(product->getName(), "Product B");
-    ASSERT_EQ(product->getPrice(), 150);
-}
-
-// Test Factory A with Product B (using polymorphism)
-TEST(FactoryPatternTests, FactoryAProductBTest) {
-    std::unique_ptr<Factory> factory = std::make_unique<ConcreteFactoryA>();
-    auto product = factory->createProduct();
-    ASSERT_EQ(product->getName(), "Product A");
-    ASSERT_EQ(product->getPrice(), 100);
-}
-
-// Test Factory B with Product A (using polymorphism)
-TEST(FactoryPatternTests, FactoryBProductATest) {
-    std::unique_ptr<Factory> factory = std::make_unique<ConcreteFactoryB>();
-    auto product = factory->createProduct();
-    ASSERT_EQ(product->getName(), "Product B");
-    ASSERT_EQ(product->getPrice(), 150);
-}
-
-// Test dynamic switching of factories
-TEST(FactoryPatternTests, DynamicFactorySwitchTest) {
-    std::unique_ptr<Factory> factory;
-    
-    factory = std::make_unique<ConcreteFactoryA>();
-    auto productA = factory->createProduct();
-    ASSERT_EQ(productA->getName(), "Product A");
-    
-    factory = std::make_unique<ConcreteFactoryB>();
-    auto productB = factory->createProduct();
-    ASSERT_EQ(productB->getName(), "Product B");
+int main(int argc, char **argv)
+{
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
