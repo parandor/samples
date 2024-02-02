@@ -5,10 +5,14 @@ import argparse
 class MarkdownLinkChecker:
     def __init__(self, markdown_path):
         self.markdown_path = markdown_path
+        self.directory_path = os.path.join(os.path.dirname(markdown_path), '')
 
     def is_valid_link(self, link):
         # Ignore links starting with "http" as they are assumed to be external URLs
-        return link.startswith('http') or link.startswith('\\') or os.path.exists(link)
+        if link.startswith('http') or link.startswith('\\'):
+            return True
+        # Ignore links if they exist, and prepend path to readme 
+        return os.path.exists(self.directory_path + link)
 
     def check_markdown_links(self):
         invalid_links = []
@@ -26,14 +30,25 @@ class MarkdownLinkChecker:
 
         return invalid_links
 
+def check_all_readme_files(directory):
+    invalid_links = []
+
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            if file.lower() == 'readme.md':
+                readme_path = os.path.join(root, file)
+                markdown_link_checker = MarkdownLinkChecker(readme_path)
+                invalid_links.extend(markdown_link_checker.check_markdown_links())
+
+    return invalid_links
+
 def main():
-    parser = argparse.ArgumentParser(description='Check validity of links in a Markdown file.')
-    parser.add_argument('markdown_file', help='Path to the Markdown file to check.')
+    parser = argparse.ArgumentParser(description='Check validity of links in all README.md files in a directory.')
+    parser.add_argument('directory', help='Path to the directory containing README.md files.')
 
     args = parser.parse_args()
 
-    markdown_link_checker = MarkdownLinkChecker(args.markdown_file)
-    invalid_links = markdown_link_checker.check_markdown_links()
+    invalid_links = check_all_readme_files(args.directory)
 
     if invalid_links:
         print("Invalid links found:")
@@ -47,4 +62,4 @@ if __name__ == "__main__":
     try:
         main()
     except argparse.ArgumentError:
-        print("Error: Please provide the path to the Markdown file.")
+        print("Error: Please provide the path to the directory containing README.md files.")
