@@ -3,6 +3,7 @@
 
 import argparse
 import os
+import re
 import subprocess
 
 class TestRunner:
@@ -15,17 +16,21 @@ class TestRunner:
         os.makedirs(self.output_directory, exist_ok=True)
         
     def discover_tests(self):
+        test_files = []
         if self.language == "go":
-            test_files = []
             for root, _, files in os.walk(".", topdown=False):
                 for file in files:
                     if file.endswith("_test.go"):
                         test_files.append(os.path.join(root, file))
-            return test_files
-        else:
+        elif self.language == "py":
+            test_files = [os.path.join(self.test_directory, file) for file in os.listdir(self.test_directory) if re.search(r"test_*", file)]
+        elif self.language == "cpp":
             test_files = [file for file in os.listdir(self.test_directory) if file.endswith(f".{self.language}")]
-            return test_files
-
+        else:
+            print(f"Failed to detect language [{self.language}]. Discover tests failed.")
+            exit(1)
+        return test_files
+        
     def compile_and_run_test(self, test_file):
         test_name = os.path.splitext(test_file)[0]
         output_binary = os.path.join(self.output_directory, test_name)
@@ -36,12 +41,13 @@ class TestRunner:
     def compile_and_check(self, test_file, output_binary):
         compile_command = self.get_compile_command(test_file, output_binary)
         print(f"Compile command: {compile_command}")
+        
         compile_result = subprocess.run(compile_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        print(compile_result.stdout)
 
         if compile_result.returncode != 0:
             # Compilation failed
             print(f"Compilation failed for {test_file}")
-            print(compile_result.stdout)
             print(compile_result.stderr)
             exit(1)  # Exit with a non-zero status code
 
@@ -51,14 +57,11 @@ class TestRunner:
             return
         
         run_result = subprocess.run(run_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-
         print(run_result.stdout)
-        print(run_result.stderr)
 
         if run_result.returncode != 0:
             # Run failed
             print(f"Run failed for {output_binary}")
-            print(run_result.stdout)
             print(run_result.stderr)
             exit(1)  # Exit with a non-zero status code
 
@@ -68,6 +71,8 @@ class TestRunner:
             return f"g++ -fdiagnostics-color=always -g -std=c++17 {os.path.join(self.test_directory, test_file)} -o {output_binary} -lgtest -lgtest_main -pthread -I cget/include/ -L cget/lib/**"
         elif self.language == "go":
             return f"go test -v {test_file}"
+        elif self.language == "py":
+            return f"pytest -v {test_file}"
         # Add more languages as needed
         else:
             raise ValueError(f"Unsupported language: {self.language}")
@@ -78,6 +83,9 @@ class TestRunner:
             return output_binary
         elif self.language == "go":
             # Go tests do not produce standalone binaries, 'go build' does. Main application runs 'go build'. 
+            return ""
+        elif self.language == "py":
+            # Python tests do not produce standalone binaries. Main application runs 'python3 <file>'. 
             return ""
         # Add more languages as needed
         else:
