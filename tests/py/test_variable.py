@@ -1,5 +1,3 @@
-# test_variable_usage.py
-
 def test_simple_variable_assignment():
     my_variable = 42
     assert my_variable == 42
