@@ -6,7 +6,7 @@
 | **Memory Management**               | [Memory Allocation Strategies](memory_allocation.cpp) \| [Custom Allocators](custom_allocators.cpp) \| [Memory Leaks Detection](memory_leak_detection.cpp) \| [Debugging](debugging.cpp) |
 | **Concurrency and Parallelism**     | [std::thread](thread.cpp) \| [std::mutex](mutex.cpp) \| [std::condition_variable](condition_variable.cpp) \| [Parallel Algorithms](parallel_algorithms.cpp) \| [Atomic Types](atomic_types.cpp)  |
 | **STL Mastery**                     | [std::vector](vector.cpp) \| [std::map](map.cpp) \| [std::unordered_map](unordered_map.cpp) \| [std::set](set.cpp) \| [Iterators](iterators.cpp) \| [Algorithms](algorithm.cpp)    |
-| **Object-Oriented Design Patterns** | [Factory](factory.cpp) \| [Observer](observer.cpp) \| [Strategy](strategy.cpp) \| Command \| Decorator                                      |
+| **Object-Oriented Design Patterns** | [Factory](factory.cpp) \| [Observer](observer.cpp) \| [Strategy](strategy.cpp) \| [Command](command.cpp) \| [Decorator](decorator.cpp) |
 | **Advanced Templates**              | SFINAE (Substitution Failure Is Not An Error), Template Metaprogramming              |
 | **File I/O**                        | std::ifstream, std::ofstream, [Serialization](serialization.cpp), Binary File Handling                   |
 | **Network Programming**             | Socket Programming, Networking Libraries (Boost.Asio), REST APIs                      |
