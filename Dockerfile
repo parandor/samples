@@ -3,7 +3,7 @@ FROM ubuntu:22.04
 
 # Update package lists and install required tools
 RUN apt-get update && \
-    apt-get -y install tar curl vim gzip sudo cmake g++ git python3 python3-pip pytest libgtest-dev && \
+    apt-get -y install tar curl vim gzip sudo cmake g++ git python3 python3-pip python3-pytest libgtest-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
