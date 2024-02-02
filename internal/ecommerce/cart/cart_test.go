@@ -1,11 +1,14 @@
 // cart/cart_test.go
-package cart
+package cart_test
 
-import "testing"
+import (
+    "testing"
+	cart "github.com/parandor/samples/internal/ecommerce/cart"
+)
 
 func TestAddToCart(t *testing.T) {
     // Test case 1
-    c := NewCart()
+    c := cart.NewCart()
     c.AddToCart(1, 2)
     if c.Items[1] != 2 {
         t.Errorf("AddToCart(1, 2) returned %d, expected %d", c.Items[1], 2)
