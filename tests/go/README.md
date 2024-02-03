@@ -1,3 +1,4 @@
+## Samples
 | Category                 | Beginner Skills                                          | Intermediate Skills                                      | Senior Skills                                              |
 |--------------------------|----------------------------------------------------------|----------------------------------------------------------|------------------------------------------------------------|
 | **Language Proficiency** | [Variables](samples/variables_test.go) \| [Functions](samples/functions_test.go) \| [Control Flow](samples/control_flow_test.go) \| [Basic Data Types](samples/basic_data_types_test.go) | [Interfaces](samples/interfaces_test.go) \| [Structs](samples/structs_test.go) \| [Pointers](samples/pointers_test.go) \| [Slices](samples/slices_test.go) \| [Maps](samples/maps_test.go) \| [Methods](samples/methods_test.go) \| [Error Handling](samples/error_handling_test.go) | [Goroutines](samples/goroutine_test.go) \| [Channels](samples/channels_test.go) \| [Packages](../../internal/ecommerce/) \| Reflection \| Custom Types |
@@ -18,7 +19,7 @@
 | **Code Review**          | Participating in Code Reviews \| Addressing Feedback        | Enforcing Code Styles with Linters \| Automated Checks    | Setting Code Review Guidelines \| Mentorship in Code Reviews  |
 | **Open Source Contribution**| Forking Repositories \| Creating Issues                   | Submitting Pull Requests \| Collaborating with Maintainers | Initiating and Leading Open Source Projects \| Code Ownership  |
 
-# 12-Factor Principles for Quality Go Code in Production
+## 12-Factor Principles for Quality Code in Production
 
 | Rule                | Explanation                                                                         | Example Project Details                                      |
 |---------------------|-------------------------------------------------------------------------------------|-----------------------------------------------------------------|

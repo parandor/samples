@@ -1,3 +1,4 @@
+## Samples
 | Category                 | Beginner Skills                                          | Intermediate Skills                                      | Senior Skills                                              |
 |--------------------------|----------------------------------------------------------|----------------------------------------------------------|------------------------------------------------------------|
 | **Language Proficiency** | [Variables](test_variable.py) \| [Functions](test_functions.py) \| [Control Flow](test_control_flow.py) \| [Basic Data Types](test_basic_data_types.py) | Classes \| Inheritance \| Lambdas \| Decorators \| Generators \| List Comprehensions \| Error Handling | Metaclasses \| Context Managers \| Multiple Inheritance \| Descriptors \| Decorator Stacks \| Recursion \| Functional |
@@ -17,3 +18,46 @@
 | **Documentation**        | Adding Comments to Code \| Basic Docstrings                | Writing Sphinx Documentation \| API Docs                  | Documenting Code Style Guides \| Comprehensive Project Docs   |
 | **Code Review**          | Participating in Code Reviews \| Addressing Feedback        | Setting Coding Standards \| Automated Code Reviews         | Leading Code Reviews \| Establishing Code Quality Standards    |
 | **Open Source Contribution**| Forking Repositories \| Creating Issues                   | Submitting Pull Requests \| Collaborating with Maintainers | Leading Open Source Projects \| Community Engagement           |
+
+## Principles for Quality Code in Production
+| Rule                                     | Explanation                                                        |
+|------------------------------------------|--------------------------------------------------------------------|
+| **Code Organization**                    | Organize code neatly with packages and modules.                   |
+|                                          | Use clear, meaningful names for variables and functions.          |
+|                                          | Adhere to PEP 8 for consistent coding style.                      |
+| **Error Handling**                       | Log errors properly for debugging.                                |
+|                                          | Use exceptions only for exceptional cases.                        |
+|                                          | Provide clear error messages for understanding.                   |
+| **Testing**                              | Write comprehensive pytest tests.                                  |
+|                                          | Set up automated testing pipelines for efficiency.                |
+|                                          | Implement CI/CD tools for streamlined deployment.                 |
+| **Documentation**                        | Use docstrings for functions and classes.                          |
+|                                          | Maintain a README for project overview and guidance.              |
+| **Logging**                              | Implement logging using Python's logging module.                  |
+|                                          | Include context in logs for effective debugging.                 |
+| **Security**                             | Follow security best practices diligently.                        |
+|                                          | Regularly update dependencies to patch vulnerabilities.          |
+|                                          | Sanitize inputs to prevent security vulnerabilities.             |
+| **Performance**                          | Profile and optimize critical code sections.                      |
+|                                          | Choose efficient data structures and algorithms.                 |
+|                                          | Implement caching where beneficial for speed.                     |
+| **Concurrency**                          | Understand Python's GIL limitations.                               |
+|                                          | Consider multiprocessing or asynchronous programming.            |
+| **Dependency Management**                | Utilize virtual environments for dependency isolation.            |
+|                                          | Specify dependencies in requirements.txt or Pipfile.            |
+|                                          | Update dependencies cautiously to avoid issues.                  |
+| **Version Control**                      | Use Git for version control, branching, and merging.              |
+|                                          | Follow branching and merging best practices.                     |
+|                                          | Write meaningful commit messages for clarity.                    |
+| **CI/CD**                                | Implement CI/CD pipelines for automated workflows.               |
+|                                          | Utilize tools like Jenkins, Travis CI, or GitHub Actions.         |
+| **Monitoring and Logging**               | Set up monitoring and logging solutions for insights.             |
+|                                          | Use tools like Prometheus, Grafana, or ELK stack.                 |
+| **Code Reviews**                         | Conduct regular code reviews for quality assurance.                |
+|                                          | Foster collaboration and knowledge sharing in reviews.            |
+| **Scalability**                         | Design for horizontal scalability when needed.                   |
+|                                          | Implement load balancing strategies for efficiency.              |
+| **Deployment**                           | Containerize applications with Docker for consistency.           |
+|                                          | Choose deployment strategies like Blue-Green or Canary.          |
+| **Backups and Disaster Recovery**        | Regularly back up critical data to prevent loss.                  |
+|                                          | Develop a disaster recovery plan for system restoration.          |
