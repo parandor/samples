@@ -18,7 +18,7 @@ To install dependencies, run:
 
 ## Docker
 
-There is a Dockerfile that creates a full install of all dependencies. 
+There is a Dockerfile that creates a full install of all dependencies for a self-hosted runner. 
 To install the self-hosted runner, a TOKEN parameter needs tobe supplied, which provides authentication.
 Get the token, follow self-hosted runner instructions below.
 ```
