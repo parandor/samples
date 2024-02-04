@@ -72,7 +72,7 @@ class TestRunner:
         elif self.language == "go":
             return f"go test -v {test_file}"
         elif self.language == "py":
-            return f"pytest -v {test_file}"
+            return f"pytest-3 -v {test_file}"
         # Add more languages as needed
         else:
             raise ValueError(f"Unsupported language: {self.language}")
