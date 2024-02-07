@@ -56,23 +56,12 @@ func TestStructWithMethods(t *testing.T) {
 	}
 }
 
-// Nested struct example
-type Location struct {
-	Latitude  float64
-	Longitude float64
-}
-
-type Place struct {
-	Name     string
-	Location Location
-}
-
 // Test4: Working with nested structs
 func TestNestedStructs(t *testing.T) {
 	// Creating an instance of the Place struct with nested Location struct
-	home := Place{
+	home := types.Place{
 		Name: "Home",
-		Location: Location{
+		Location: types.Location{
 			Latitude:  37.7749,
 			Longitude: -122.4194,
 		},

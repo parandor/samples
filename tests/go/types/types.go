@@ -97,3 +97,19 @@ func (mt MyType) String() string {
 }
 
 
+// Define a custom type representing a temperature in Fahrenheit.
+type Fahrenheit float64
+
+// Define a custom type representing a temperature in Celsius.
+type Celsius float64
+
+// Nested struct example
+type Location struct {
+	Latitude  float64
+	Longitude float64
+}
+
+type Place struct {
+	Name     string
+	Location Location
+}
