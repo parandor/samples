@@ -60,18 +60,31 @@ func TestChannelCommunication(t *testing.T) {
 	ch := make(chan int)
 
 	go func() {
+		defer close(ch)
 		// Sending data to the channel
-		ch <- 42
+		for i := 40; i <= 45; i++ {
+			ch <- i // send values into the channel
+		}
 	}()
 
 	// Simulating some work
 	time.Sleep(100 * time.Millisecond)
+	
+	expected := []int{40,41,42,43,44,45}
+	received := make([]int, 0)
+	for val := range ch {
+		received = append(received, val)
+	}
 
-	// Receiving data from the channel
-	result := <-ch
-
-	if result != 42 {
-		t.Errorf("Expected 42, got %d", result)
+	// Assert that received values match expected values
+	if len(received) != len(expected) {
+		t.Errorf("Received %d values, expected %d", len(received), len(expected))
+		return
+	}
+	for i := range expected {
+		if received[i] != expected[i] {
+			t.Errorf("Received %d, expected %d", received[i], expected[i])
+		}
 	}
 }
 
