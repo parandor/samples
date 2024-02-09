@@ -6,7 +6,7 @@
 | **Concurrency and Parallelism**     | [std::thread](thread.cpp) \| [std::mutex](mutex.cpp) \| [std::condition_variable](condition_variable.cpp) \| [Parallel Algorithms](parallel_algorithms.cpp) \| [Atomic Types](atomic_types.cpp)  |
 | **STL Mastery**                     | [std::vector](vector.cpp) \| [std::map](map.cpp) \| [std::unordered_map](unordered_map.cpp) \| [std::set](set.cpp) \| [Iterators](iterators.cpp) \| [Algorithms](algorithm.cpp)    |
 | **Object-Oriented Design Patterns** | [Factory](factory.cpp) \| [Observer](observer.cpp) \| [Strategy](strategy.cpp) \| [Command](command.cpp) \| [Decorator](decorator.cpp) |
-| **Advanced Templates**              | SFINAE (Substitution Failure Is Not An Error), Template Metaprogramming              |
+| **Advanced Templates**              | [SFINAE](SFINAE.cpp), [Template Metaprogramming](template_metaprogramming.cpp) |
 | **File I/O**                        | std::ifstream \| std::ofstream \| [Serialization](serialization.cpp) \| Binary File Handling                   |
 | **Network Programming**             | Socket Programming \| Networking Libraries (Boost.Asio) \| REST APIs                      |
 | **Build Systems**                   | CMake \| Make \| Understanding of Build Tools and Dependency Management                 |
