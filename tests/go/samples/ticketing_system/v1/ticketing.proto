@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+package tests.go.samples.ticketing_system.v1;
+
+option go_package = "github.com/yourusername/yourpackagename";
+
+// Ticket represents a support ticket
+message Ticket {
+  string id = 1;
+  string subject = 2;
+  string status = 3;
+  Priority priority = 4;
+  string assigned_to = 5;
+  repeated string comments = 6;
+  string category = 7;
+}
+
+// Priority represents the priority level of a ticket
+enum Priority {
+  PRIORITY_UNSPECIFIED = 0;
+  PRIORITY_LOW = 1;
+  PRIORITY_MEDIUM = 2;
+  PRIORITY_HIGH = 3;
+}
+
+// TicketingService represents the ticketing service
+service TicketingService {
+  // CreateTicket creates a new support ticket
+  rpc CreateTicket(CreateTicketRequest) returns (CreateTicketResponse);
+  
+  // GetTicketByID retrieves a support ticket by its ID
+  rpc GetTicketByID(GetTicketByIDRequest) returns (GetTicketByIDResponse);
+  
+  // ListTickets lists all support tickets
+  rpc ListTickets(ListTicketsRequest) returns (ListTicketsResponse);
+
+  // AddComment adds a comment to a ticket
+  rpc AddComment(AddCommentRequest) returns (AddCommentResponse);
+
+  // UpdateTicketStatus updates the status of a ticket
+  rpc UpdateTicketStatus(UpdateTicketStatusRequest) returns (UpdateTicketStatusResponse);
+}
+
+// CreateTicketRequest represents the request to create a ticket
+message CreateTicketRequest {
+  Ticket ticket = 1;
+}
+
+// CreateTicketResponse represents the response for creating a ticket
+message CreateTicketResponse {
+  Ticket ticket = 1;
+}
+
+// GetTicketByIDRequest represents the request to get a ticket by ID
+message GetTicketByIDRequest {
+  string id = 1;
+}
+
+// GetTicketByIDResponse represents the response for getting a ticket by ID
+message GetTicketByIDResponse {
+  Ticket ticket = 1;
+}
+
+// ListTicketsRequest represents the request to list tickets
+message ListTicketsRequest {
+}
+
+// ListTicketsResponse represents the response containing a list of tickets
+message ListTicketsResponse {
+  repeated Ticket tickets = 1;
+}
+
+// AddCommentRequest represents the request to add a comment to a ticket
+message AddCommentRequest {
+  string ticket_id = 1;
+  string comment = 2;
+}
+
+// AddCommentResponse represents the response for adding a comment to a ticket
+message AddCommentResponse {
+  Ticket ticket = 1;
+}
+
+// UpdateTicketStatusRequest represents the request to update the status of a ticket
+message UpdateTicketStatusRequest {
+  string ticket_id = 1;
+  string new_status = 2;
+}
+
+// UpdateTicketStatusResponse represents the response for updating the status of a ticket
+message UpdateTicketStatusResponse {
+  Ticket ticket = 1;
+}
