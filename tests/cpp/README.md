@@ -53,7 +53,7 @@
 | **Version Control**                      | Use Git or another version control system for tracking changes.    |
 |                                          | Follow branching and merging best practices for collaborative development.|
 |                                          | Write meaningful commit messages for clear version history.       |
-| **CI/CD**                                | Implement CI/CD pipelines using tools like Jenkins or GitLab CI. |
+| **CI/CD**                                | Implement CI/CD pipelines using tools like GitHub, Jenkins or GitLab CI. |
 |                                          | Automate build, testing, and deployment processes.                |
 | **Monitoring and Logging**               | Implement logging and monitoring tools for performance analysis. |
 |                                          | Use tools like Prometheus, Grafana, or ELK stack for log aggregation. |
