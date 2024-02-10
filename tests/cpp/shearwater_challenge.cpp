@@ -15,36 +15,41 @@ struct Waypoint
 };
 
 // Structure to represent a solution
-struct Solution {
-    float time; // Time to deliver all packages
+struct Solution
+{
+    float time;  // Time to deliver all packages
     int penalty; // Total penalty incurred
 };
 
-class Solver {
+class Solver
+{
+    constexpr static int SPEED = 2; // m/s
 public:
-    Solution solve(vector<Waypoint>& waypoints) {
+    Solution solve(vector<Waypoint> &waypoints)
+    {
         int n = waypoints.size();
         vector<Solution> dp(n);
 
-        dp[0].time = sqrt(waypoints[0].x * waypoints[0].x + waypoints[0].y * waypoints[0].y) / 2 + 10;
+        dp[0].time = sqrt(waypoints[0].x * waypoints[0].x + waypoints[0].y * waypoints[0].y) / SPEED + 10;
         dp[0].penalty = waypoints[0].penalty;
 
-        for (int i = 1; i < n; ++i) {
-            int distance = sqrt((waypoints[i].x - waypoints[i - 1].x) * (waypoints[i].x - waypoints[i - 1].x)
-                                + (waypoints[i].y - waypoints[i - 1].y) * (waypoints[i].y - waypoints[i - 1].y));
-            dp[i].time = dp[i - 1].time + distance / 2 + 10;
+        for (int i = 1; i < n; ++i)
+        {
+            int distance = sqrt((waypoints[i].x - waypoints[i - 1].x) * (waypoints[i].x - waypoints[i - 1].x) + (waypoints[i].y - waypoints[i - 1].y) * (waypoints[i].y - waypoints[i - 1].y));
+            dp[i].time = dp[i - 1].time + distance / SPEED + 10;
             dp[i].penalty = dp[i - 1].penalty + waypoints[i].penalty;
 
             // Check if skipping the current waypoint leads to a better solution
-            if (i >= 2) {
-                dp[i].time = min(dp[i].time, dp[i - 2].time + distance / 2 + 10);
+            if (i >= 2)
+            {
+                dp[i].time = min(dp[i].time, dp[i - 2].time + distance / SPEED + 10);
                 dp[i].penalty = min(dp[i].penalty, dp[i - 2].penalty);
             }
         }
 
         // Adding the time to reach the final point
         int last_distance = sqrt(waypoints[n - 1].x * waypoints[n - 1].x + waypoints[n - 1].y * waypoints[n - 1].y);
-        dp[n - 1].time += last_distance / 2;
+        dp[n - 1].time += last_distance / SPEED + 10;
 
         return dp[n - 1];
     }
@@ -117,7 +122,6 @@ TEST_P(LoadTestCaseTest, LoadTestCaseTest)
             // testCase.printWaypoints();
             Solution result = solver.solve(testCase.waypoints);
             cout << "Time: " << result.time << ", Penalty: " << result.penalty << endl;
-    
         }
     }
 }
