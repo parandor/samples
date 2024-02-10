@@ -10,7 +10,7 @@ namespace fs = std::filesystem;
 // Structure to represent a waypoint
 struct Waypoint
 {
-    int x, y;    // Coordinates of the waypoint
+    float x, y;  // Coordinates of the waypoint as floats
     int penalty; // Penalty for missing delivery
 };
 
@@ -35,7 +35,7 @@ public:
 
         for (int i = 1; i < n; ++i)
         {
-            int distance = sqrt((waypoints[i].x - waypoints[i - 1].x) * (waypoints[i].x - waypoints[i - 1].x) + (waypoints[i].y - waypoints[i - 1].y) * (waypoints[i].y - waypoints[i - 1].y));
+            float distance = sqrt((waypoints[i].x - waypoints[i - 1].x) * (waypoints[i].x - waypoints[i - 1].x) + (waypoints[i].y - waypoints[i - 1].y) * (waypoints[i].y - waypoints[i - 1].y));
             dp[i].time = dp[i - 1].time + distance / SPEED + 10;
             dp[i].penalty = dp[i - 1].penalty + waypoints[i].penalty;
 
@@ -48,8 +48,11 @@ public:
         }
 
         // Adding the time to reach the final point
-        int last_distance = sqrt(waypoints[n - 1].x * waypoints[n - 1].x + waypoints[n - 1].y * waypoints[n - 1].y);
+        float last_distance = sqrt(waypoints[n - 1].x * waypoints[n - 1].x + waypoints[n - 1].y * waypoints[n - 1].y);
         dp[n - 1].time += last_distance / SPEED + 10;
+
+        // Formatting time to three decimal places
+        dp[n - 1].time = round(dp[n - 1].time * 1000) / 1000;
 
         return dp[n - 1];
     }
@@ -119,7 +122,7 @@ TEST_P(LoadTestCaseTest, LoadTestCaseTest)
             std::cout << "filename: " << filename << std::endl;
             testCase.loadTestCase(filename);
             ASSERT_GT(testCase.numWaypoints, 0); // Check that the number of waypoints is greater than 0
-            // testCase.printWaypoints();
+            //testCase.printWaypoints();
             Solution result = solver.solve(testCase.waypoints);
             cout << "Time: " << result.time << ", Penalty: " << result.penalty << endl;
         }
