@@ -1,4 +1,5 @@
 # $1 is the token, $2 is the repo tag
 RUNNER_NAME=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 8)
 REPO_TAG="$2.$RUNNER_NAME"
-docker build --build-arg TOKEN=$1 --build-arg RUNNER_NAME=$REPO_TAG -t parandorenko/repo:$REPO_TAG .
+REPO_URL=$3
+docker build --build-arg TOKEN=$1 --build-arg RUNNER_NAME=$REPO_TAG --build-arg REPO_URL=$REPO_URL -t parandorenko/repo:$REPO_TAG .
