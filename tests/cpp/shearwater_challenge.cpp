@@ -29,6 +29,7 @@ struct State
 class Optimizer
 {
 public:
+
     double findLowestTime(const vector<Waypoint> &waypoints)
     {
         int n = waypoints.size();
@@ -68,19 +69,55 @@ public:
                 if (!visited[i])
                 {
                     double new_cost = current.cost + distance(waypoints[current.idx].x, waypoints[current.idx].y, waypoints[i].x, waypoints[i].y) / SPEED + 10;
-                    new_cost += waypoints[i].penalty;
+                    // std::cout << "wp: " << waypoints[i].x << "," << waypoints[i].y << ", pen: " << waypoints[i].penalty << std::endl;
+                    double skipped_cost = skipped_waypoints_cost(current, visited, waypoints);
+                    new_cost += skipped_cost;
                     if (!dp.count(i) || new_cost < dp[i])
                     {
+                        std::cout << "skipped cost: " << skipped_cost << std::endl;
                         dp[i] = new_cost;
                         vector<int> new_path = current.path;
                         new_path.push_back(i);
-                        pq.push({waypoints[i].x, waypoints[i].y, i, new_cost + heuristic(waypoints[i].x, waypoints[i].y, 100, 100), new_path});
+                        pq.push({waypoints[i].x, waypoints[i].y, i, new_cost /*+ heuristic(waypoints[i].x, waypoints[i].y, 100, 100)*/, new_path});
+                        log_q(pq, waypoints);
                     }
                 }
             }
         }
 
         return calculateTotalTime(waypoints, optimal_path);
+    }
+
+    double skipped_waypoints_cost(const State &current, const vector<bool> & visited, const vector<Waypoint> &waypoints)
+    {
+        double cumulative_penalty = 0.0;
+        for (int i = 0; i < visited.size(); ++i)
+        {
+            if (!visited[i] && i != current.idx)
+            {
+                cumulative_penalty += waypoints[i].penalty;
+            }
+        }
+        std::cout << "cum pen: " << cumulative_penalty << std::endl;
+        return cumulative_penalty;
+    }
+
+    void log_q(priority_queue<State, vector<State>, function<bool(State, State)>> &pq, const vector<Waypoint> &waypoints)
+    {
+        // Log the contents of the priority queue
+        cout << "Priority Queue contents after pushing new state:" << endl;
+        priority_queue<State, vector<State>, function<bool(State, State)>> temp_pq = pq;
+        while (!temp_pq.empty())
+        {
+            State temp_state = temp_pq.top();
+            temp_pq.pop();
+            cout << "x: " << temp_state.x << ", y: " << temp_state.y << ", idx: " << temp_state.idx << ", cost: " << temp_state.cost << ", path:";
+            for (int waypoint_index : temp_state.path)
+            {
+                cout << " (" << waypoints[waypoint_index].x << "," << waypoints[waypoint_index].y << ")";
+            }
+            cout << endl;
+        }
     }
 
 private:
@@ -90,34 +127,59 @@ private:
         return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
     }
 
+    vector<int> getSkippedWaypoints(const vector<int> &optimal_path, int num_waypoints)
+    {
+        vector<int> skipped_waypoints;
+        for (int i = 0; i < num_waypoints; ++i)
+        {
+            if (find(optimal_path.begin(), optimal_path.end(), i) == optimal_path.end())
+            {
+                skipped_waypoints.push_back(i);
+            }
+        }
+        return skipped_waypoints;
+    }
+
     double calculateTotalTime(const vector<Waypoint> &waypoints, const vector<int> &path)
     {
         double total_time = 0.0;
         int current_x = 0, current_y = 0;
+        auto skipped = getSkippedWaypoints(path, waypoints.size());
+        auto skipped_time = 0.0;
+        for (int i = 0; i < skipped.size(); ++i)
+        {
+            skipped_time += waypoints[skipped[i]].penalty;
+            // std::cout << "skipped: " << waypoints[skipped[i]].x << "," << waypoints[skipped[i]].y << std::endl;
+        }
+        std::cout << "skipped time total: " << skipped_time << std::endl;
 
         for (int i = 0; i < path.size(); ++i)
         {
-            total_time += distance(current_x, current_y, waypoints[path[i]].x, waypoints[path[i]].y) / SPEED;
-            total_time += 10; // Stop for 10 seconds at each waypoint
-            current_x = waypoints[path[i]].x;
-            current_y = waypoints[path[i]].y;
-            if (i < path.size() - 1)
-            {
-                total_time += waypoints[path[i]].penalty; // Add penalty for skipping the current waypoint
-            }
+            std::cout << "Optimized path: x: " << waypoints[path[i]].x << ", y: " << waypoints[path[i]].y << std::endl;
         }
 
-        // Add penalty for the final waypoint
-        total_time += waypoints[path.back()].penalty;
+        for (int i = 0; i < path.size(); ++i)
+        {
+            std::cout << "x: " << waypoints[path[i]].x << ", y: " << waypoints[path[i]].y << std::endl;
+            total_time += distance(current_x, current_y, waypoints[path[i]].x, waypoints[path[i]].y) / SPEED;
+            total_time += 10; // Stop for 10 seconds at each waypoint
+            std::cout << "total time: " << total_time << std::endl;
+            current_x = waypoints[path[i]].x;
+            current_y = waypoints[path[i]].y;
+        }
+        total_time += skipped_time;
 
         return total_time;
     }
 
     double heuristic(int x1, int y1, int x2, int y2)
     {
-        return distance(x1, y1, x2, y2);
+        return distance(x1, y1, x2, y2) / SPEED + 10;
     }
 };
+
+// std::cout << "new_cost: " << new_cost << ", " << dp[i] << ", dp count: " << dp.count(i) << std::endl;
+// std::cout << "cost [" << i << "], " << dp[i] << ", x,y: " << waypoints[i].x << "," << waypoints[i].y << std::endl;
 
 class WaypointTest : public ::testing::Test
 {
@@ -157,6 +219,7 @@ private:
         int numWaypoints;
         TestInfo info;
         info.filePath = filePath;
+        std::cout << "file: " << filePath << std::endl;
         while (input >> numWaypoints && numWaypoints != 0)
         {
             std::vector<Waypoint> waypoints;
@@ -164,8 +227,10 @@ private:
             {
                 Waypoint wp;
                 input >> wp.x >> wp.y >> wp.penalty;
+                // std::cout << "x: " << wp.x << ", y: " << wp.y << ", pen: " << wp.penalty << std::endl;
                 waypoints.push_back(wp);
             }
+            waypoints.push_back({100, 100, 10});
             info.testCases.push_back(waypoints);
         }
         testInfos.push_back(info);
