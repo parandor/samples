@@ -4,6 +4,114 @@
 #include <filesystem>
 #include <cmath>
 
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <cmath>
+#include <unordered_map>
+
+using namespace std;
+
+struct Waypoint {
+    int x;
+    int y;
+    int penalty;
+};
+
+struct State {
+    int x;
+    int y;
+    int idx;
+    double cost;
+    vector<int> path;
+};
+
+double distance(int x1, int y1, int x2, int y2) {
+    return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
+}
+
+double calculateTotalTime(const vector<Waypoint>& waypoints, const vector<int>& path) {
+    double total_time = 0.0;
+    int current_x = 0, current_y = 0;
+
+    for (int i = 0; i < path.size(); ++i) {
+        total_time += distance(current_x, current_y, waypoints[path[i]].x, waypoints[path[i]].y) / 2.0; // Assuming UAV moves at 2 m/s
+        total_time += 10; // Stop for 10 seconds at each waypoint
+        current_x = waypoints[path[i]].x;
+        current_y = waypoints[path[i]].y;
+        if (i < path.size() - 1) {
+            total_time += waypoints[path[i]].penalty; // Add penalty for skipping the current waypoint
+        }
+    }
+
+    // Add penalty for the final waypoint
+    total_time += waypoints[path.back()].penalty;
+
+    return total_time;
+}
+
+double heuristic(int x1, int y1, int x2, int y2) {
+    return distance(x1, y1, x2, y2);
+}
+
+double findLowestTime(const vector<Waypoint>& waypoints) {
+    int n = waypoints.size();
+    vector<int> optimal_path;
+    vector<bool> visited(n, false);
+
+    priority_queue<State, vector<State>, function<bool(State, State)>> pq(
+        [](const State& a, const State& b) {
+            return a.cost > b.cost;
+        }
+    );
+
+    unordered_map<int, double> dp; // Memoization for dynamic programming
+
+    pq.push({0, 0, 0, 0.0, {0}});
+
+    while (!pq.empty()) {
+        State current = pq.top();
+        pq.pop();
+
+        if (visited[current.idx]) {
+            continue;
+        }
+
+        visited[current.idx] = true;
+
+        if (current.idx == n - 1) {
+            optimal_path = current.path;
+            break;
+        }
+
+        for (int i = 0; i < n; ++i) {
+            if (!visited[i]) {
+                double new_cost = current.cost + distance(waypoints[current.idx].x, waypoints[current.idx].y, waypoints[i].x, waypoints[i].y) / 2.0 + 10;
+                new_cost += waypoints[i].penalty;
+                if (!dp.count(i) || new_cost < dp[i]) {
+                    dp[i] = new_cost;
+                    vector<int> new_path = current.path;
+                    new_path.push_back(i);
+                    pq.push({waypoints[i].x, waypoints[i].y, i, new_cost + heuristic(waypoints[i].x, waypoints[i].y, 100, 100), new_path});
+                }
+            }
+        }
+    }
+
+    return calculateTotalTime(waypoints, optimal_path);
+}
+
+int main() {
+    vector<Waypoint> waypoints = {{25, 25, 5}, {50, 50, 10}, {75, 75, 7}, {100, 100, 15}};
+    // Waypoints are represented as (x, y, penalty)
+
+    double lowest_time = findLowestTime(waypoints);
+    cout << "Lowest possible time: " << lowest_time << " seconds" << endl;
+
+    return 0;
+}
+
+
 using namespace std;
 namespace fs = std::filesystem;
 
