@@ -91,34 +91,6 @@ public:
         return calculateTotalTime(waypoints, optimal_path);
     }
 
-    void printPath(const vector<int> &path, const vector<Waypoint> &waypoints)
-    {
-        cout << " PATH:";
-        for (int waypoint_index : path)
-        {
-            cout << " (" << waypoints[waypoint_index].x << "," << waypoints[waypoint_index].y << ")";
-        }
-        cout << endl;
-    }
-
-    void log_q(priority_queue<State, vector<State>, function<bool(State, State)>> &pq, const vector<Waypoint> &waypoints)
-    {
-        // Log the contents of the priority queue
-        cout << "Priority Queue contents after pushing new state:" << endl;
-        priority_queue<State, vector<State>, function<bool(State, State)>> temp_pq = pq;
-        while (!temp_pq.empty())
-        {
-            State temp_state = temp_pq.top();
-            temp_pq.pop();
-            cout << "x: " << temp_state.x << ", y: " << temp_state.y << ", idx: " << temp_state.idx << ", cost: " << temp_state.cost << ", path:";
-            for (int waypoint_index : temp_state.path)
-            {
-                cout << " (" << waypoints[waypoint_index].x << "," << waypoints[waypoint_index].y << ")";
-            }
-            cout << endl;
-        }
-    }
-
 private:
     constexpr static float SPEED = 2.0; // Assuming UAV moves at 2 m/s
     double distance(int x1, int y1, int x2, int y2)
@@ -187,6 +159,34 @@ private:
         total_time -= 10; // 100,100 is double counted, so deduct 10 seconds
 
         return total_time + skipped_time;
+    }
+    
+    void printPath(const vector<int> &path, const vector<Waypoint> &waypoints)
+    {
+        cout << " PATH:";
+        for (int waypoint_index : path)
+        {
+            cout << " (" << waypoints[waypoint_index].x << "," << waypoints[waypoint_index].y << ")";
+        }
+        cout << endl;
+    }
+
+    void log_q(priority_queue<State, vector<State>, function<bool(State, State)>> &pq, const vector<Waypoint> &waypoints)
+    {
+        // Log the contents of the priority queue
+        cout << "Priority Queue contents after pushing new state:" << endl;
+        priority_queue<State, vector<State>, function<bool(State, State)>> temp_pq = pq;
+        while (!temp_pq.empty())
+        {
+            State temp_state = temp_pq.top();
+            temp_pq.pop();
+            cout << "x: " << temp_state.x << ", y: " << temp_state.y << ", idx: " << temp_state.idx << ", cost: " << temp_state.cost << ", path:";
+            for (int waypoint_index : temp_state.path)
+            {
+                cout << " (" << waypoints[waypoint_index].x << "," << waypoints[waypoint_index].y << ")";
+            }
+            cout << endl;
+        }
     }
 };
 
