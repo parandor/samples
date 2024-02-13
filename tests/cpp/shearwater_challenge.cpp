@@ -73,27 +73,16 @@ public:
             {
                 if (!visited[i])
                 {
-                    // printPath(current.path, waypoints);
-                    // cout << "Next wp: " << waypoints[i].x << ", " << waypoints[i].y << endl;
                     double time_to_next = distance(waypoints[current.idx].x, waypoints[current.idx].y, waypoints[i].x, waypoints[i].y) / SPEED + 10;
                     double backtrack_cost = getBackTrackPenalty(waypoints, current.idx, i, i - 2);
                     double skipped_cost = getSkippedTimeMod(current.path, waypoints, i);
                     double new_cost = current.cost + time_to_next + skipped_cost - backtrack_cost;
-                    // cout << "New cost: " << new_cost << ", cur cost: " << current.cost << ", next cost: " << time_to_next << ", skip cost: " << skipped_cost << ", dp.count[i]: " << dp.count(i) << ", i: " << i << endl;
-                    if (dp.count(i))
-                    {
-                        // cout << "dp[i]: " << dp[i] << ", newcost: " << new_cost << std::endl;
-                    }
                     if (!dp.count(i) || new_cost < dp[i])
                     {
-                        /// cout << "dp valid for index: " << i << endl;
-                        // cout << "New cost: " << new_cost << ", cur cost: " << current.cost << ", next cost: " << time_to_next << ", skip cost: " << skipped_cost << endl;
                         dp[i] = new_cost;
                         vector<int> new_path = current.path;
                         new_path.push_back(i);
-                        // printPath(new_path, waypoints);
                         pq.push({waypoints[i].x, waypoints[i].y, i, new_cost, new_path});
-                        // log_q(pq, waypoints);
                     }
                 }
             }
@@ -156,7 +145,6 @@ private:
     double getSkippedTimeMod(const vector<int> &optimal_path, const vector<Waypoint> &waypoints, const int &next_index)
     {
         double skipped_time = 0.0;
-        // printPath(optimal_path, waypoints);
         for (int i = 0; i < waypoints.size(); ++i)
         {
             if (i > next_index)
@@ -165,7 +153,6 @@ private:
             }
             if (find(optimal_path.begin(), optimal_path.end(), i) == optimal_path.end())
             {
-                // cout << "waypoint skipped: " << waypoints[i].x << ", " << waypoints[i].y << ", " << waypoints[i].penalty << endl;
                 skipped_time += waypoints[i].penalty;
             }
         }
@@ -176,7 +163,7 @@ private:
     {
         double skipped_time = 0.0;
         for (int i = 0; i < waypoints.size(); ++i)
-        {            
+        {
             if (find(optimal_path.begin(), optimal_path.end(), i) == optimal_path.end())
             {
                 skipped_time += waypoints[i].penalty;
@@ -190,7 +177,6 @@ private:
         double total_time = 0.0;
         int current_x = 0, current_y = 0;
         auto skipped_time = getSkippedTime(path, waypoints);
-        //cout << "final skippedtime: " << skipped_time << endl;
 
         for (int i = 0; i < path.size(); ++i)
         {
@@ -226,15 +212,31 @@ protected:
         }
     }
 
+    struct WaypointData
+    {
+        std::vector<Waypoint> waypoints;
+        float expected_lowest_time = 0.0;
+    };
+
     struct TestInfo
     {
         fs::path filePath;
-        std::vector<std::vector<Waypoint>> testCases;
+        std::vector<WaypointData> testCases;
     };
 
     std::vector<TestInfo> testInfos;
 
 private:
+    static void replaceString(std::string &str, const std::string &target, const std::string &replacement)
+    {
+        size_t startPos = 0;
+        while ((startPos = str.find(target, startPos)) != std::string::npos)
+        {
+            str.replace(startPos, target.length(), replacement);
+            startPos += replacement.length();
+        }
+    }
+
     void ReadTestCases(std::ifstream &input, const fs::path &filePath)
     {
         int numWaypoints;
@@ -243,17 +245,32 @@ private:
         std::cout << "file: " << filePath << std::endl;
         while (input >> numWaypoints && numWaypoints != 0)
         {
-            std::vector<Waypoint> waypoints;
-            waypoints.push_back({0, 0, 0});
+            WaypointData data;
+            data.waypoints.push_back({0, 0, 0});
             for (int j = 0; j < numWaypoints; ++j)
             {
                 Waypoint wp;
                 input >> wp.x >> wp.y >> wp.penalty;
-                waypoints.push_back(wp);
+                data.waypoints.push_back(wp);
             }
-            waypoints.push_back({100, 100, 0});
-            info.testCases.push_back(waypoints);
+            data.waypoints.push_back({100, 100, 0});
+            info.testCases.push_back(data);
         }
+
+        std::string sample_output = filePath;
+        WaypointTest::replaceString(sample_output, "sample_input", "sample_output");
+
+        std::ifstream output(sample_output);
+        if (output.is_open())
+        {
+            int i = 0;
+            while (output >> info.testCases[i].expected_lowest_time)
+            {
+                i++;
+            }
+            output.close();
+        }
+
         testInfos.push_back(info);
     }
 };
@@ -273,9 +290,9 @@ TEST_F(WaypointTest, WaypointValidity)
     // For example, you can check if the waypoints are within valid ranges
     for (const auto &info : testInfos)
     {
-        for (const auto &waypoints : info.testCases)
+        for (const auto &data : info.testCases)
         {
-            for (const auto &wp : waypoints)
+            for (const auto &wp : data.waypoints)
             {
                 EXPECT_GE(wp.x, 0);
                 EXPECT_GE(wp.y, 0);
@@ -286,17 +303,30 @@ TEST_F(WaypointTest, WaypointValidity)
     }
 }
 
+template <typename T>
+T roundDifference(T &difference)
+{
+    const T threshold = 0.001; // Threshold for considering difference as zero
+    if (std::abs(difference) < threshold)
+    {
+        difference = 0.000;
+    }
+    return difference;
+}
+
 TEST_F(WaypointTest, LowestTimeTest)
 {
     Optimizer optimizer;
     for (const auto &info : testInfos)
     {
-        for (const auto &waypoints : info.testCases)
+        for (const auto &data : info.testCases)
         {
-            double lowestTime = optimizer.findLowestTime(waypoints);
-            // Add your assertions here to validate the lowest time
-            // For demonstration, let's just print it
-            std::cout << "Lowest time for test case in file " << info.filePath << ": " << lowestTime << std::endl;
+            double lowestTime = optimizer.findLowestTime(data.waypoints);
+            double diff = abs(lowestTime - data.expected_lowest_time);
+            double rounded = roundDifference(diff);
+            std::string result = ((int)rounded) == 0 ? "PASS" : "FAIL";
+            std::cout << "For file " << info.filePath << ": optimized lowest time: " << lowestTime << " sec, expected: "
+                      << data.expected_lowest_time << " sec. Diff (sec): " << rounded << ", " << result << std::endl;
         }
     }
 }
