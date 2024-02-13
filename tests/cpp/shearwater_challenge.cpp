@@ -29,6 +29,38 @@ struct State
 class Optimizer
 {
 public:
+    /**
+        Initialization:
+
+        Start with an initial cost of 0.0.
+        Determine the total number of waypoints.
+        Initialize data structures to keep track of visited waypoints, the optimal path found so far, and a
+        priority queue to explore potential paths. Additionally, set up memoization to store calculated costs.
+        Start with the Initial Waypoint:
+
+        Begin at the starting waypoint and add it to the priority queue with its associated cost.
+        Exploring Potential Paths:
+
+        Continuously explore potential paths until all waypoints have been visited.
+        At each step:
+        Select the most promising waypoint from the priority queue.
+        Check if this waypoint has already been visited. If so, skip it and move to the next potential waypoint.
+        Otherwise, mark it as visited.
+        If the selected waypoint is the ending waypoint, store the current path as the optimal path and terminate the exploration.
+        Otherwise, evaluate all possible next waypoints:
+        Compute the time needed to travel to each potential waypoint.
+        Consider penalties for backtracking and skipping waypoints.
+        Calculate the new cost for each potential path, factoring in the current cost, travel time, penalties, and any modifications.
+        Update the memoization table if a lower cost is found for a waypoint.
+        Add the newly calculated states (waypoints) to the priority queue for further exploration.
+        Optimal Path Found:
+
+        Once all waypoints have been visited or the ending waypoint has been reached, the exploration ends.
+        The stored optimal path represents the sequence of waypoints that result in the lowest time.
+        Return Result:
+
+        The algorithm returns the optimal path, allowing you to traverse the waypoints in the order specified for the lowest overall time.
+    */
     double findLowestTime(const vector<Waypoint> &waypoints)
     {
         double final_cost = 0.0;
@@ -160,7 +192,7 @@ private:
 
         return total_time + skipped_time;
     }
-    
+
     void printPath(const vector<int> &path, const vector<Waypoint> &waypoints)
     {
         cout << " PATH:";
