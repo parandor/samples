@@ -66,10 +66,6 @@ public:
             if (current.idx == n - 1) // Check if the ending waypoint has been visited
             {
                 optimal_path = current.path;
-                // cout << "final cost: " << current.cost << endl;
-                //  cout << "printing otimal path: " << std::endl;
-                //  printPath(optimal_path, waypoints);
-
                 break;
             }
 
@@ -80,9 +76,9 @@ public:
                     // printPath(current.path, waypoints);
                     // cout << "Next wp: " << waypoints[i].x << ", " << waypoints[i].y << endl;
                     double time_to_next = distance(waypoints[current.idx].x, waypoints[current.idx].y, waypoints[i].x, waypoints[i].y) / SPEED + 10;
-                    double backtrack_distance = getBackTrackDistance(waypoints, current.idx, i, i - 2);
+                    double backtrack_cost = getBackTrackPenalty(waypoints, current.idx, i, i - 2);
                     double skipped_cost = getSkippedTimeMod(current.path, waypoints, i);
-                    double new_cost = current.cost + time_to_next + skipped_cost - backtrack_distance;
+                    double new_cost = current.cost + time_to_next + skipped_cost - backtrack_cost;
                     // cout << "New cost: " << new_cost << ", cur cost: " << current.cost << ", next cost: " << time_to_next << ", skip cost: " << skipped_cost << ", dp.count[i]: " << dp.count(i) << ", i: " << i << endl;
                     if (dp.count(i))
                     {
@@ -141,14 +137,9 @@ private:
         return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
     }
 
-    double getSkippedTime(const vector<int> &optimal_path, const vector<Waypoint> &waypoints, const int &next_index)
+    double getBackTrackPenalty(const vector<Waypoint> &waypoints, const int current, const int next, const int previous)
     {
-        return getSkippedTime(optimal_path, waypoints) - waypoints[next_index].penalty;
-    }
-
-    double getBackTrackDistance(const vector<Waypoint> &waypoints, const int current, const int next, const int previous)
-    {
-        if (current < 0 || current >= waypoints.size() || next < 0 || next > waypoints.size() || previous < 0 || previous > waypoints.size())
+        if (current < 0 || current >= waypoints.size() || next < 0 || next >= waypoints.size() || previous < 0 || previous >= waypoints.size())
         {
             return 0.0;
         }
@@ -184,13 +175,10 @@ private:
     double getSkippedTime(const vector<int> &optimal_path, const vector<Waypoint> &waypoints)
     {
         double skipped_time = 0.0;
-        // printPath(optimal_path, waypoints);
         for (int i = 0; i < waypoints.size(); ++i)
-        {
-
+        {            
             if (find(optimal_path.begin(), optimal_path.end(), i) == optimal_path.end())
             {
-                // cout << "waypoint skipped: " << waypoints[i].x << ", " << waypoints[i].y << ", " << waypoints[i].penalty << endl;
                 skipped_time += waypoints[i].penalty;
             }
         }
@@ -202,7 +190,7 @@ private:
         double total_time = 0.0;
         int current_x = 0, current_y = 0;
         auto skipped_time = getSkippedTime(path, waypoints);
-        cout << "final skippedtime: " << skipped_time << endl;
+        //cout << "final skippedtime: " << skipped_time << endl;
 
         for (int i = 0; i < path.size(); ++i)
         {
@@ -213,11 +201,6 @@ private:
         total_time -= 10; // 100,100 is double counted, so deduct 10 seconds
 
         return total_time + skipped_time;
-    }
-
-    double heuristic(int x1, int y1, int x2, int y2)
-    {
-        return distance(x1, y1, x2, y2) / SPEED + 10;
     }
 };
 
