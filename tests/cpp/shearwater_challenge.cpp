@@ -33,6 +33,9 @@ public:
         This algorithm efficiently explores potential paths through the waypoints,
         considering various factors such as travel time, penalties, and constraints,
         to determine the path that minimizes the overall time required.
+        According to the expected lowest traversal times given as part of the data set,
+        it seems that there are cases where either the optimal path is sub-optimal or
+        the skipped waypoints penalties are not accounted for properly or per spec.
 
         Initialization:
 
