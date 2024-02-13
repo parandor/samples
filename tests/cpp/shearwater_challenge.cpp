@@ -66,13 +66,8 @@ public:
             if (current.idx == n - 1) // Check if the ending waypoint has been visited
             {
                 optimal_path = current.path;
-
-                // cout << " OPTIMAL PATH path:";
-                // for (int waypoint_index : optimal_path)
-                // {
-                //     cout << " (" << waypoints[waypoint_index].x << "," << waypoints[waypoint_index].y << ")";
-                // }
-                // cout << endl;
+                // cout << "printing otimal path: " << std::endl;
+                // printPath(optimal_path, waypoints);
 
                 break;
             }
@@ -81,21 +76,42 @@ public:
             {
                 if (!visited[i])
                 {
+                    // printPath(current.path, waypoints);
+                    // cout << "Next wp: " << waypoints[i].x << ", " << waypoints[i].y << endl;
                     double time_to_next = distance(waypoints[current.idx].x, waypoints[current.idx].y, waypoints[i].x, waypoints[i].y) / SPEED + 10;
-                    double skipped_cost = getSkippedTime(current.path, waypoints);
+                    double skipped_cost = getSkippedTimeMod(current.path, waypoints, i);
                     double new_cost = current.cost + time_to_next + skipped_cost;
-                    if (!dp.count(i) || new_cost > dp[i])
+                    // cout << "New cost: " << new_cost << ", cur cost: " << current.cost << ", next cost: " << time_to_next << ", skip cost: " << skipped_cost << ", dp.count[i]: " << dp.count(i) << ", i: " << i << endl;
+                    if (dp.count(i))
                     {
+                        // cout << "dp[i]: " << dp[i] << ", newcost: " << new_cost << std::endl;
+                    }
+                    if (!dp.count(i) || new_cost < dp[i])
+                    {
+                        // cout << "dp valid for index: " << i << endl;
+                        // cout << "New cost: " << new_cost << ", cur cost: " << current.cost << ", next cost: " << time_to_next << ", skip cost: " << skipped_cost << endl;
                         dp[i] = new_cost;
                         vector<int> new_path = current.path;
                         new_path.push_back(i);
+                        // printPath(new_path, waypoints);
                         pq.push({waypoints[i].x, waypoints[i].y, i, new_cost, new_path});
+                        // log_q(pq, waypoints);
                     }
                 }
             }
         }
 
         return calculateTotalTime(waypoints, optimal_path);
+    }
+
+    void printPath(const vector<int> &path, const vector<Waypoint> &waypoints)
+    {
+        cout << " PATH:";
+        for (int waypoint_index : path)
+        {
+            cout << " (" << waypoints[waypoint_index].x << "," << waypoints[waypoint_index].y << ")";
+        }
+        cout << endl;
     }
 
     void log_q(priority_queue<State, vector<State>, function<bool(State, State)>> &pq, const vector<Waypoint> &waypoints)
@@ -123,13 +139,41 @@ private:
         return sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2));
     }
 
+    double getSkippedTime(const vector<int> &optimal_path, const vector<Waypoint> &waypoints, const int &next_index)
+    {
+        return getSkippedTime(optimal_path, waypoints) - waypoints[next_index].penalty;
+    }
+
+    double getSkippedTimeMod(const vector<int> &optimal_path, const vector<Waypoint> &waypoints, const int &next_index)
+    {
+        double skipped_time = 0.0;
+        // printPath(optimal_path, waypoints);
+        for (int i = 0; i < waypoints.size(); ++i)
+        {
+            if (i > next_index)
+            {
+                continue;
+            }
+            if (find(optimal_path.begin(), optimal_path.end(), i) == optimal_path.end())
+            {
+                // cout << "waypoint skipped: " << waypoints[i].x << ", " << waypoints[i].y << ", " << waypoints[i].penalty << endl;
+                skipped_time += waypoints[i].penalty;
+            }
+        }
+        return skipped_time - waypoints[next_index].penalty;
+        ;
+    }
+
     double getSkippedTime(const vector<int> &optimal_path, const vector<Waypoint> &waypoints)
     {
         double skipped_time = 0.0;
+        // printPath(optimal_path, waypoints);
         for (int i = 0; i < waypoints.size(); ++i)
         {
+
             if (find(optimal_path.begin(), optimal_path.end(), i) == optimal_path.end())
             {
+                //cout << "waypoint skipped: " << waypoints[i].x << ", " << waypoints[i].y << ", " << waypoints[i].penalty << endl;
                 skipped_time += waypoints[i].penalty;
             }
         }
@@ -141,6 +185,7 @@ private:
         double total_time = 0.0;
         int current_x = 0, current_y = 0;
         auto skipped_time = getSkippedTime(path, waypoints);
+        cout << "final skippedtime: " << skipped_time << endl;
 
         for (int i = 0; i < path.size(); ++i)
         {
@@ -148,6 +193,7 @@ private:
             current_x = waypoints[path[i]].x;
             current_y = waypoints[path[i]].y;
         }
+        total_time -= 10; // 100,100 is double counted, so deduct 10 seconds
 
         return total_time + skipped_time;
     }
