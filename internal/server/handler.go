@@ -48,7 +48,8 @@ func NewMyPingServiceHandler() (string, http.Handler) {
 	handler := &MyPingServiceHandler{}
 
 	// Use NewPingServiceHandler to create the HTTP handler
-	path, httpHandler := pingv1connect.NewPingServiceHandler(handler)
+	path, httpHandler := pingv1connect.NewPingServiceHandler(handler,
+		connect.WithInterceptors(NewAuthInterceptor("")))
 
 	// Optionally, you can add middleware or modify the http.Handler here
 

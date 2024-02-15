@@ -22,7 +22,10 @@ func TestPingHandlerAndClient(t *testing.T) {
 	mux.Handle(server.NewMyPingServiceHandler())
 	listener := memhttp.NewServer(mux)
 
-	c := pingv1connect.NewPingServiceClient(listener.Client(), listener.URL())
+	c := pingv1connect.NewPingServiceClient(
+		listener.Client(),
+		listener.URL(),
+		connect.WithInterceptors(server.NewAuthInterceptor("super-secret")))
 
 	t_start := timestamppb.New(time.Now())
 	number := int32(123)
@@ -32,15 +35,16 @@ func TestPingHandlerAndClient(t *testing.T) {
 			Number:  number,
 		}),
 	)
+	_, err = server.HandleResponse(pingResp, err)
 	if err != nil {
-		t.Fatalf("Ping failed: %s", pingResp)
+		t.Fatalf("Ping failed: %s", err)
 	}
 
 	timeDifference := pingResp.Msg.ProcessedAt.AsTime().Sub(t_start.AsTime())
 	if timeDifference > 10*time.Millisecond {
 		t.Fatalf("Ping failed: expected msg ping duration of %d ms but got %d ms", 10, timeDifference)
 	} else {
-		fmt.Printf("Msg took %d us", timeDifference.Microseconds())
+		fmt.Println("Msg took", timeDifference.Microseconds(), "us")
 	}
 
 	if pingResp.Msg.Number != number {
@@ -60,4 +64,28 @@ func TestPingHandlerAndClient(t *testing.T) {
 	if serverInfoResp.Msg.ServerName != "MyServer" {
 		t.Fatalf("GetServerInfo failed: expected %s but got %s", "MyServer", serverInfoResp.Msg.ServerName)
 	}
+}
+
+func TestClientAuthFailure(t *testing.T) {
+	mux := http.NewServeMux()
+	mux.Handle(server.NewMyPingServiceHandler())
+	listener := memhttp.NewServer(mux)
+
+	c := pingv1connect.NewPingServiceClient(
+		listener.Client(),
+		listener.URL(),
+		connect.WithInterceptors(server.NewAuthInterceptor("wrong-secret")))
+
+	number := int32(123)
+	pingResp, err := c.Ping(context.Background(),
+		connect.NewRequest(&pingv1.PingRequest{
+			Message: "Hello ",
+			Number:  number,
+		}),
+	)
+	_, err = server.HandleResponse(pingResp, err)
+	if err == nil {
+		t.Fatalf("Ping failed: %s", err)
+	}
+	fmt.Println(err.Error())
 }
