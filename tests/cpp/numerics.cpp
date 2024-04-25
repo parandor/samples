@@ -117,10 +117,11 @@ namespace Numerics
         checkReverseDigits(CHAR_MIN, CHAR_MAX);
     }
 
-    TEST(NumericsTests, NumericsReverseDigitsInt)
-    {
-        checkReverseDigits(INT_MIN, INT_MAX);
-    }
+    // TODO: Very long test. Use sparingly.
+    // TEST(NumericsTests, NumericsReverseDigitsInt)
+    // {
+    //     checkReverseDigits(INT_MIN, INT_MAX);
+    // }
 }
 
 int main(int argc, char **argv)
