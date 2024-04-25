@@ -89,22 +89,19 @@ namespace Numerics
         T value = min;
         for (;;)
         {
-            // cout << "value: " << value << endl;
             long long value_pos = static_cast<long long>(value);
             // Cast to positive to work with positive values
             if (value < 0)
             {
                 value_pos = -static_cast<long long>(value);
-                // cout << "value_pos: " << value_pos << ", val: " << value <<  endl;
             }
-            // cout << "value pos: " << value_pos << endl;
+            // Reverse integer using string
             string expected = to_string(value_pos);
-            //  cout << "expected: " << expected << endl;
             reverse(expected.begin(), expected.end());
 
+            // Reverse digits and assert
             string actual = numerics.reverseDigits(value_pos);
             ASSERT_EQ(expected, actual);
-            // cout << "actual: " << actual << ", expected: " << expected << ", value: " << value << endl;
             if (value++ == max)
                 break;
         }
@@ -118,6 +115,11 @@ namespace Numerics
     TEST(NumericsTests, NumericsReverseDigitsChar)
     {
         checkReverseDigits(CHAR_MIN, CHAR_MAX);
+    }
+
+    TEST(NumericsTests, NumericsReverseDigitsInt)
+    {
+        checkReverseDigits(INT_MIN, INT_MAX);
     }
 }
 
