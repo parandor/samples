@@ -93,7 +93,7 @@ namespace Numerics
             // Cast to positive to work with positive values
             if (value < 0)
             {
-                value_pos = -static_cast<long long>(value);
+                value_pos = -value_pos;
             }
             // Reverse integer using string
             string expected = to_string(value_pos);
