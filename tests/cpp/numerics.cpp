@@ -45,7 +45,7 @@ namespace Numerics
         template <typename T>
         static string reverseDigits(const T &in)
         {
-            // Perform assertions and error checking
+            // Perform assertions, error checking, or throw
             if (std::isnan(in))
                 return "";
             if (!std::numeric_limits<T>::is_integer)
@@ -84,8 +84,6 @@ namespace Numerics
     template <typename T>
     void checkReverseDigits(const T &min, const T &max)
     {
-        Numerics numerics;
-
         T value = min;
         for (;;)
         {
@@ -100,7 +98,7 @@ namespace Numerics
             reverse(expected.begin(), expected.end());
 
             // Reverse digits and assert
-            string actual = numerics.reverseDigits(value_pos);
+            string actual = Numerics::reverseDigits(value_pos);
             ASSERT_EQ(expected, actual);
             if (value++ == max)
                 break;
