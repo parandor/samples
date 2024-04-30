@@ -8,8 +8,10 @@
 #include <vector>
 #include <numeric>
 #include <gtest/gtest.h>
+#include <chrono>
 
 using namespace std;
+using namespace chrono;
 
 namespace
 {
@@ -118,9 +120,106 @@ namespace
         ASSERT_EQ(count, 3);
     }
 
+    std::string padString(const std::string &str, size_t length)
+    {
+        // Calculate the number of characters to pad
+        size_t padding = length - str.length();
+
+        // Return the padded string
+        return str + std::string(padding, '0');
+    }
+
+    std::pair<std::string, std::string> padStrings(const std::string &str1, const std::string &str2)
+    {
+        // Find the maximum length among the two strings
+        size_t maxLength = std::max(str1.length(), str2.length());
+
+        // Pad both strings to the maximum length
+        std::string paddedStr1 = padString(str1, maxLength);
+        std::string paddedStr2 = padString(str2, maxLength);
+
+        // Return the pair of padded strings
+        return std::make_pair(paddedStr1, paddedStr2);
+    }
+
+    /**
+     * Definition for singly-linked list.
+     */
+    struct ListNode
+    {
+        int val;
+        ListNode *next;
+        ListNode() : val(0), next(nullptr) {}
+        ListNode(int x) : val(x), next(nullptr) {}
+        ListNode(int x, ListNode *next) : val(x), next(next) {}
+    };
+
     class Solution
     {
     public:
+        /**
+         * You are given two non-empty linked lists representing two non-negative integers.
+         * The digits are stored in reverse order, and each of their nodes contains a single
+         *  digit. Add the two numbers and return the sum as a linked list.
+         * You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+         */
+        ListNode *addTwoNumbers(ListNode *l1, ListNode *l2)
+        {
+            ListNode *list = l1;
+            string num1, num2;
+            while (true)
+            {
+                num1 += to_string(list->val);
+                list = list->next;
+                if (list == NULL)
+                {
+                    break;
+                }
+            }
+            list = l2;
+            while (true)
+            {
+                num2 += to_string(list->val);
+                list = list->next;
+                if (list == NULL)
+                {
+                    break;
+                }
+            }
+            auto paddedStrings = padStrings(num1, num2);
+            string num_res = "";
+            bool carry = false;
+            for (int i = 0; i < paddedStrings.first.size(); ++i)
+            {
+                int first = paddedStrings.first[i] - '0';
+                int second = paddedStrings.second[i] - '0';
+                int res = (first + second);
+                if (carry)
+                {
+                    res++;
+                    carry = false;
+                }
+                int digit = res % 10;
+                num_res += to_string(digit);
+                carry = res > 9;
+            }
+            if (carry)
+            {
+                num_res += "1";
+                carry = false;
+            }
+
+            list = new ListNode(num_res[0] - '0');
+
+            ListNode *list2return = list;
+            for (int i = 1; i < num_res.size(); ++i)
+            {
+                list->next = new ListNode(num_res[i] - '0');
+                list = list->next;
+            }
+            return list2return;
+        }
+
         /**
          * You are given an array prices where prices[i] is the price of a given stock on the ith day.
          * You want to maximize your profit by choosing a single day to buy one stock and choosing a
@@ -194,6 +293,38 @@ namespace
         expected = {0};
         result = sol.maxProfit(input);
         EXPECT_EQ(expected, result);
+    }
+
+    TEST(AlgorithmTest, AddTwoNumbers)
+    {
+        vector<int> l1 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+        vector<int> l2 = {6, 4};
+        vector<int> expected = {6, 6, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+        ListNode *ln1 = new ListNode(1);
+        ListNode *ln1Ptr = ln1;
+        for (auto a : l1)
+        {
+            ln1->next = new ListNode(a);
+            ln1 = ln1->next;
+        }
+        ListNode *ln2 = new ListNode(5);
+        ListNode *ln2Ptr = ln2;
+        for (auto a : l2)
+        {
+            ln2->next = new ListNode(a);
+            ln2 = ln2->next;
+        }
+        Solution sol;
+        auto start = high_resolution_clock::now();
+        ListNode *res = sol.addTwoNumbers(ln1Ptr, ln2Ptr);
+        auto stop = high_resolution_clock::now();add t
+        auto duration = duration_cast<microseconds>(stop - start);
+        cout << "Run time: " << duration.count() << "us" << endl;
+        for (int i = 0; i < expected.size(); ++i)
+        {
+            EXPECT_EQ(expected[i], res->val);
+            res = res->next;
+        }
     }
 
 }
