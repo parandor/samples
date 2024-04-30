@@ -317,7 +317,7 @@ namespace
         Solution sol;
         auto start = high_resolution_clock::now();
         ListNode *res = sol.addTwoNumbers(ln1Ptr, ln2Ptr);
-        auto stop = high_resolution_clock::now();add t
+        auto stop = high_resolution_clock::now();
         auto duration = duration_cast<microseconds>(stop - start);
         cout << "Run time: " << duration.count() << "us" << endl;
         for (int i = 0; i < expected.size(); ++i)
