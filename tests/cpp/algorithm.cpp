@@ -268,7 +268,74 @@ namespace
             }
             return result;
         }
+
+        /**
+         * Given a singly linked list, remove the node with target value without returning parameters.
+         *
+         * Note: In C++, when you pass a pointer to a function, you're passing a copy of the pointer.
+         * If you want to modify the original pointer itself (as opposed to the data it's pointing to),
+         * you need to pass a reference to the pointer
+         */
+        template <typename T>
+        void removeNodesWithValue(ListNode *&list, const T target)
+        {
+            while (list && list->val == target)
+            {
+                auto temp = list;
+                list = list->next;
+                delete temp;
+            }
+            auto start = list;
+            auto prev = list;
+            while (start && start->next)
+            {
+                if (start->val == target)
+                {
+                    prev->next = start->next;
+                    auto temp = start;
+                    start = prev->next;
+                    delete temp;
+                    continue;
+                }
+                prev = start;
+                start = start->next;
+            }
+            if (start && start->val == target)
+            {
+                prev->next = nullptr;
+                delete start;
+            }
+        }
+
+        static void printList(const ListNode *list)
+        {
+            auto temp = list;
+            while (temp)
+            {
+                cout << temp->val << ", ";
+                temp = temp->next;
+            }
+            cout << "" << endl;
+        }
     };
+
+    ListNode *createList(const vector<int> &v)
+    {
+        ListNode *newNode = nullptr;
+        ListNode *firstNode = nullptr;
+
+        for (const auto &a : v)
+        {
+            if (!newNode)
+            {
+                firstNode = newNode = new ListNode(a);
+                continue;
+            }
+            newNode->next = new ListNode(a);
+            newNode = newNode->next;
+        }
+        return firstNode;
+    }
 
     TEST(AlgorithmTest, TwoSum)
     {
@@ -297,23 +364,11 @@ namespace
 
     TEST(AlgorithmTest, AddTwoNumbers)
     {
-        vector<int> l1 = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-        vector<int> l2 = {6, 4};
+        vector<int> v1 = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+        vector<int> v2 = {5, 6, 4};
         vector<int> expected = {6, 6, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
-        ListNode *ln1 = new ListNode(1);
-        ListNode *ln1Ptr = ln1;
-        for (auto a : l1)
-        {
-            ln1->next = new ListNode(a);
-            ln1 = ln1->next;
-        }
-        ListNode *ln2 = new ListNode(5);
-        ListNode *ln2Ptr = ln2;
-        for (auto a : l2)
-        {
-            ln2->next = new ListNode(a);
-            ln2 = ln2->next;
-        }
+        ListNode *ln1Ptr = createList(v1);
+        ListNode *ln2Ptr = createList(v2);
         Solution sol;
         auto start = high_resolution_clock::now();
         ListNode *res = sol.addTwoNumbers(ln1Ptr, ln2Ptr);
@@ -327,6 +382,42 @@ namespace
         }
     }
 
+    TEST(AlgorithmTest, RemoveNodesWithValue)
+    {
+        vector<int> v = {1, 3, 4, 3, 1, 1, 4, 5, 6, 7, 1};
+        vector<int> e = {3, 4, 3, 4, 5, 6, 7};
+        ListNode *ln1Ptr = createList(v);
+        Solution sol;
+        sol.removeNodesWithValue(ln1Ptr, 1);
+        for (const auto &elem : e)
+        {
+            EXPECT_EQ(elem, ln1Ptr->val);
+            ln1Ptr = ln1Ptr->next;
+        }
+        v = {3, 4, 3, 1, 1, 4, 5, 6, 7, 1};
+        e = {3, 4, 3, 4, 5, 6, 7};
+        ln1Ptr = createList(v);
+        sol.removeNodesWithValue(ln1Ptr, 1);
+        for (const auto &elem : e)
+        {
+            EXPECT_EQ(elem, ln1Ptr->val);
+            ln1Ptr = ln1Ptr->next;
+        }
+        v = {1, 1, 1};
+        e = {};
+        ln1Ptr = createList(v);
+        sol.removeNodesWithValue(ln1Ptr, 1);
+        EXPECT_EQ(ln1Ptr, nullptr);
+        v = {1, 1, 3, 4, 3, 1, 1, 4, 5, 6, 7};
+        e = {3, 4, 3, 4, 5, 6, 7};
+        ln1Ptr = createList(v);
+        sol.removeNodesWithValue(ln1Ptr, 1);
+        for (const auto &elem : e)
+        {
+            EXPECT_EQ(elem, ln1Ptr->val);
+            ln1Ptr = ln1Ptr->next;
+        }
+    }
 }
 // Add more tests as needed
 
