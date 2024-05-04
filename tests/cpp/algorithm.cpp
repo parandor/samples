@@ -279,31 +279,31 @@ namespace
         template <typename T>
         void removeNodesWithValue(ListNode *&list, const T target)
         {
+            // Use unique_ptr to automatically handle memory management for freeing deleted node memory
+            unique_ptr<ListNode> temp;
+
+            // Remove leading nodes with the target value
             while (list && list->val == target)
             {
-                auto temp = list;
+                // Transfer ownership of the object pointed to by list to temp. List becomes empty (nullptr),
+                // as ownership is transferred to temp.
+                temp.reset(list);
                 list = list->next;
-                delete temp;
             }
             auto start = list;
             auto prev = list;
-            while (start && start->next)
+
+            while (start) // Loop until the end of the list is reached (start is nullptr)
             {
-                if (start->val == target)
+                if (start->val == target) // Check if the current node's value matches the target
                 {
-                    prev->next = start->next;
-                    auto temp = start;
-                    start = prev->next;
-                    delete temp;
-                    continue;
+                    prev->next = start->next; // Update the previous node's next pointer to skip the current node
+                    temp.reset(start);        // Transfer ownership of the current node to temp and deallocate memory
+                    start = prev->next;       // Move start pointer to the next node after the one that was just removed
+                    continue;                 // Skip the rest of the loop iteration and proceed to the next iteration
                 }
-                prev = start;
-                start = start->next;
-            }
-            if (start && start->val == target)
-            {
-                prev->next = nullptr;
-                delete start;
+                prev = start;        // Update prev pointer to the current node
+                start = start->next; // Move start pointer to the next node
             }
         }
 
