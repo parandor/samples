@@ -3,12 +3,15 @@
  * Date: January 26, 2024
  */
 
-#include <algorithm>
-#include <limits.h>
-#include <vector>
-#include <numeric>
 #include <gtest/gtest.h>
+
+#include <algorithm>
 #include <chrono>
+#include <limits.h>
+#include <list>
+#include <numeric>
+#include <unordered_map>
+#include <vector>
 
 using namespace std;
 using namespace chrono;
@@ -418,7 +421,84 @@ namespace
             ln1Ptr = ln1Ptr->next;
         }
     }
+
+    class LRUCache
+    {
+
+    public:
+        LRUCache(int capacity) : capacity(capacity)
+        {
+        }
+
+        // Get value given key
+        string get(int key)
+        {
+            // Keep track of stored keys in a map to ensure O(1) access time complexity
+            auto it = map.find(key);
+            if (it == map.end())
+            {
+                return "not found"; // not found
+            }
+            // Update the cache since the key has been found. Need to update front to most recently used.
+            cache.splice(cache.begin(), cache, it->second);
+            return it->second->second;
+        }
+
+        // Put key and value into least recently used cache
+        void put(int key, string value)
+        {
+            auto it = map.find(key);
+            if (it != map.end())
+            {
+                // Found it in the map. Update value and splice accordingly.
+                it->second->second = value;
+                cache.splice(cache.begin(), cache, it->second);
+                return;
+            }
+
+            if(cache.size() == capacity) {
+                // Sync and update the map accordingly, since we will be adding to the map afterwards 
+                // erase the k/v pair from map given oldest item in cache using its key
+                map.erase(cache.back().first);
+                cache.pop_back();
+            }
+
+            // Did not find it in the map. Must store in cache and map.
+            cache.emplace_front(key, value);
+            map[key] = cache.begin();
+        }
+
+    private:
+        int capacity;
+        list<pair<int, string>> cache;
+        // Stores the beginning iterator of the cache, which holds the most recently used item that 
+        // was pushed.
+        unordered_map<int, list<pair<int, string>>::iterator> map;
+    };
+
+    TEST(AlgorithmTest, LRUCachePutGet)
+    {
+        LRUCache cache(2);
+
+        cache.put(1, "one");
+        cache.put(2, "two");
+        std::cout << cache.get(1) << std::endl; // returns 1
+        assert(cache.get(1) == "one");
+        cache.put(3, "three");                  // evicts key 2
+        std::cout << cache.get(2) << std::endl; // returns not found
+        assert(cache.get(2) == "not found");
+        std::cout << cache.get(3) << std::endl; // returns 3
+        assert(cache.get(3) == "three");
+        cache.put(4, "four");                   // evicts key 1
+        std::cout << cache.get(1) << std::endl; // returns not found
+        assert(cache.get(1) == "not found");
+        std::cout << cache.get(3) << std::endl; // returns 3
+        assert(cache.get(3) == "three");
+        std::cout << cache.get(4) << std::endl; // returns 4
+        assert(cache.get(4) == "four");
+    }
 }
+
 // Add more tests as needed
 
 int main(int argc, char **argv)
