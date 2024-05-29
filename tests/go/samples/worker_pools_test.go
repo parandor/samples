@@ -1,7 +1,7 @@
 package samples
 
 import (
-	//"fmt"
+	"sort"
 	"sync"
 	"testing"
 )
@@ -85,7 +85,7 @@ func TestWorkerPoolMultipleWorkers(t *testing.T) {
 	// Receive results from the worker pool
 	go func() {
 		receivedResults := make(map[int]int) // Map to store received results
-	
+
 		for i := 0; i < numWorkers; i++ {
 			result := <-resultStream
 			receivedResults[result] = result // Store the received result
@@ -93,7 +93,7 @@ func TestWorkerPoolMultipleWorkers(t *testing.T) {
 
 		// Check the received results against the expected values
 		tasks := []int{1, 8, 27}
-		for _, item := range(tasks) {
+		for _, item := range tasks {
 			expected := item * 2 // Each task doubled by the worker
 			if result, ok := receivedResults[expected]; !ok {
 				// Result not received for the expected value
@@ -113,18 +113,31 @@ func TestWorkerPoolMultipleWorkers(t *testing.T) {
 	close(resultStream)
 }
 
+// collectAndSortResults collects results from the resultStream channel, sorts them, and returns the sorted slice.
+func collectAndSortResults(resultStream chan int) []int {
+	var results []int
+	for result := range resultStream {
+		results = append(results, result)
+	}
+	sort.Ints(results)
+	return results
+}
+
 // TestWorkerPoolWithWorkerShutdown tests a worker pool with workers that can be shutdown gracefully.
 func TestWorkerPoolWithWorkerShutdown(t *testing.T) {
 	taskStream := make(chan int)
 	resultStream := make(chan int)
+	var wg sync.WaitGroup
 
 	// Create a function to start a worker
 	startWorker := func(id int) {
 		worker := Worker{ID: id, TaskStream: taskStream, Result: resultStream}
-		go worker.Start()
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			worker.Start()
+		}()
 	}
-
-	var wg sync.WaitGroup
 
 	// Start with three workers
 	startWorker(1)
@@ -133,26 +146,32 @@ func TestWorkerPoolWithWorkerShutdown(t *testing.T) {
 
 	// Send tasks to the worker pool
 	tasks := []int{2, 4, 6}
-	for _, task := range tasks {
-		taskStream <- task
-	}
-
-	// Shutdown worker with ID 2
-	close(taskStream)
-
-
-	// Verify the results
-	expectedResults := []int{4, 8, 12}
 	go func() {
-		for _, expected := range expectedResults {
-			result := <-resultStream
-			if result != expected {
-				t.Errorf("Expected result %d, got %d", expected, result)
-			}
+		for _, task := range tasks {
+			taskStream <- task
 		}
-		wg.Done()	
-		// Close the result stream
-		close(resultStream)
+		close(taskStream) // close taskStream to signal workers to stop
 	}()
-	wg.Wait()
+
+	// Wait for all workers to finish
+	go func() {
+		wg.Wait()
+		// print("closing result stream")
+		close(resultStream) // close resultStream after all workers are done
+		// print("closed result stream")
+	}()
+
+	// Collect and sort results
+	results := collectAndSortResults(resultStream)
+
+	// Verify the sorted results
+	expectedResults := []int{4, 8, 12}
+	if len(results) != len(expectedResults) {
+		t.Errorf("Expected %d results, got %d", len(expectedResults), len(results))
+	}
+	for i, result := range results {
+		if result != expectedResults[i] {
+			t.Errorf("Expected result %d at index %d, got %d", expectedResults[i], i, result)
+		}
+	}
 }
