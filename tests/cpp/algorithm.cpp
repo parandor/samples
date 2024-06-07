@@ -456,8 +456,9 @@ namespace
                 return;
             }
 
-            if(cache.size() == capacity) {
-                // Sync and update the map accordingly, since we will be adding to the map afterwards 
+            if (cache.size() == capacity)
+            {
+                // Sync and update the map accordingly, since we will be adding to the map afterwards
                 // erase the k/v pair from map given oldest item in cache using its key
                 map.erase(cache.back().first);
                 cache.pop_back();
@@ -471,7 +472,7 @@ namespace
     private:
         int capacity;
         list<pair<int, string>> cache;
-        // Stores the beginning iterator of the cache, which holds the most recently used item that 
+        // Stores the beginning iterator of the cache, which holds the most recently used item that
         // was pushed.
         unordered_map<int, list<pair<int, string>>::iterator> map;
     };
@@ -497,8 +498,64 @@ namespace
         std::cout << cache.get(4) << std::endl; // returns 4
         assert(cache.get(4) == "four");
     }
-}
 
+    // Write algorithm to return the value of last man standing in circle of people
+    // where there are N people and mth is the person out.
+    int lastManStanding(int N, int m)
+    {
+        if (m < 1 || N < 1)
+        {
+            return -1;
+        }
+        list<int> mylist;
+        for (int i = 1; i <= N; ++i)
+        {
+            mylist.push_back(i);
+        }
+        auto it = mylist.begin();
+        while (mylist.size() > 1)
+        {
+            // Advance iterator m times
+            for (int i = 1; i < m; ++i)
+            {
+                ++it;
+                // Loop to beginning if it is the end
+                if (it == mylist.end())
+                {
+                    it = mylist.begin();
+                }
+            }
+            it = mylist.erase(it);
+            // Loop to beginning if it is the end
+            if (it == mylist.end())
+            {
+                it = mylist.begin();
+            }
+        }
+        return mylist.front();
+    }
+
+    TEST(AlgorithmTest, LastManStanding)
+    {
+        // Test cases
+        assert(lastManStanding(5, 2) == 3);
+        assert(lastManStanding(7, 3) == 4);
+        assert(lastManStanding(10, 5) == 3);
+        assert(lastManStanding(1, 1) == 1);
+        assert(lastManStanding(100, 7) == 50);
+        assert(lastManStanding(15, 4) == 13);
+        assert(lastManStanding(8, 2) == 1);
+
+        // Edge cases
+        assert(lastManStanding(0, 5) == -1);      // Zero persons
+        assert(lastManStanding(5, 0) == -1);      // Eliminating every 0th
+        assert(lastManStanding(1, 1) == 1);       // Only one person
+        assert(lastManStanding(2, 1) == 2);       // Only two persons
+        assert(lastManStanding(2, 2) == 1);       // Only two persons, eliminating every 2nd person
+        assert(lastManStanding(1000, 1) == 1000); // Eliminating every person
+        assert(lastManStanding(1000, 2) == 977);  // Typical large case
+    }
+}
 // Add more tests as needed
 
 int main(int argc, char **argv)
