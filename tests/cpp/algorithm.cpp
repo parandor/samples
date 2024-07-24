@@ -7,11 +7,17 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cmath>
 #include <limits.h>
 #include <list>
 #include <numeric>
 #include <unordered_map>
 #include <vector>
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <sstream>
 
 using namespace std;
 using namespace chrono;
@@ -554,6 +560,155 @@ namespace
         assert(lastManStanding(2, 2) == 1);       // Only two persons, eliminating every 2nd person
         assert(lastManStanding(1000, 1) == 1000); // Eliminating every person
         assert(lastManStanding(1000, 2) == 977);  // Typical large case
+    }
+
+    const unsigned CHUNK_SIZE = 50; // Define chunk size
+    int readfile(const std::string &inputFilePath, const std::string &logFilePath)
+    {
+
+        std::ifstream inputFile(inputFilePath); // Input file stream
+        std::ofstream logFile(logFilePath);     // Output file stream for logging
+
+        if (!inputFile || !logFile)
+        {
+            std::cerr << "Failed to open the file." << std::endl;
+            return 1;
+        }
+
+        char buffer[CHUNK_SIZE + 1]; // Buffer to hold CHUNK_SIZE characters + '\0'
+        buffer[CHUNK_SIZE] = '\0';   // Ensure the buffer is null-terminated
+
+        int totalCharsRead = 0; // Total characters read counter
+
+        while (!inputFile.eof())
+        {
+            inputFile.read(buffer, CHUNK_SIZE);             // Read up to CHUNK_SIZE characters
+            std::streamsize bytesRead = inputFile.gcount(); // Number of characters actually read
+
+            // Log totalCharsRead to log file
+            totalCharsRead += bytesRead;
+            logFile << "Total characters read so far: " << totalCharsRead << std::endl;
+
+            // Print the characters read (excluding any garbage beyond the end of the file)
+            std::cout.write(buffer, bytesRead);
+
+            // Check if we've reached the end of file
+            if (inputFile.eof())
+            {
+                break;
+            }
+        }
+
+        inputFile.close(); // Close input file
+        logFile.close();   // Close log file
+
+        return 0;
+    }
+
+    int add(int a, int b);
+    int sub(int a, int b);
+    int mul(int a, int b);
+    int div(int a, int b);
+
+    unordered_map<string, string> readConfigFile(const string &filename)
+    {
+        unordered_map<string, string> configMap;
+        ifstream file(filename);
+        string line;
+
+        while (getline(file, line))
+        {
+            // Find the position of '='
+            size_t delimiterPos = line.find('=');
+            if (delimiterPos == string::npos)
+            {
+                // If '=' is not found, skip this line
+                continue;
+            }
+
+            // Extract key and value
+            string key = line.substr(0, delimiterPos);
+            string value = line.substr(delimiterPos + 1);
+
+            // Trim key and value (remove leading/trailing whitespace)
+            key.erase(0, key.find_first_not_of(" \t\r\n"));
+            key.erase(key.find_last_not_of(" \t\r\n") + 1);
+            value.erase(0, value.find_first_not_of(" \t\r\n"));
+            value.erase(value.find_last_not_of(" \t\r\n") + 1);
+
+            // Insert into map
+            configMap[key] = value;
+        }
+
+        return configMap;
+    }
+
+    /**
+     * Algorithm will group timestamps into {k} partitions at {i} seconds each.
+     * Note: floor is used to group {1, 5} with partition duration of 5 into 0th partition. 
+     */
+    unordered_map<int, list<int>> groupTimestamps(vector<int> timestamps, int partition_duration)
+    {
+        if (timestamps.empty())
+        {
+            return {};
+        }
+        unordered_map<int, list<int>> my_partitions;
+
+        const auto start_time = timestamps[0];
+        for (const auto &t : timestamps)
+        {
+            const auto p_index = (int)(floor(t - start_time) / partition_duration);
+            my_partitions[p_index].push_back(t);
+        }
+        return my_partitions;
+    }
+
+    TEST(AlgorithmTest, GroupTimestamps)
+    {
+        vector<int> empties = {};
+        auto res = groupTimestamps(empties, 5);
+        assert(res.size() == 0);
+
+        vector<int> timestamps = {1, 5, 10, 11, 12, 13, 14, 15, 20, 25, 30, 35, 40};
+        res = groupTimestamps(timestamps, 5);
+        assert(res[1].size() != 5);
+        assert(res[2].size() == 5);
+        assert(res[0].size() == 2);
+        assert(res.find(8) == res.end());
+    }
+
+    TEST(AlgorithmTest, DataTransmission)
+    {
+        string filename = "config.txt"; // Replace with your config file path
+        unordered_map<string, string> configMap = readConfigFile(filename);
+        struct config
+        {
+            int chunkSize;
+            string log_file;
+            string server_url;
+        };
+
+        config my_config;
+
+        // Print out the contents of the map for verification
+        for (const auto &pair : configMap)
+        {
+            if (pair.first == "chunk_size")
+            {
+                my_config.chunkSize = stoi(pair.second);
+            }
+            else if (pair.first == "log_file")
+            {
+                my_config.log_file = pair.second;
+            }
+            else if (pair.first == "server_url")
+            {
+                my_config.server_url = pair.second;
+            }
+        }
+        readfile(my_config.server_url, my_config.log_file);
+        cout << "chunk size: " << my_config.chunkSize << ", server url: " << my_config.server_url << endl;
     }
 }
 // Add more tests as needed
