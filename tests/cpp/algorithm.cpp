@@ -645,7 +645,7 @@ namespace
 
     /**
      * Algorithm will group timestamps into {k} partitions at {i} seconds each.
-     * Note: floor is used to group {1, 5} with partition duration of 5 into 0th partition. 
+     * Note: floor is used to group {1, 5} with partition duration of 5 into 0th partition.
      */
     unordered_map<int, list<int>> groupTimestamps(vector<int> timestamps, int partition_duration)
     {
@@ -709,6 +709,80 @@ namespace
         }
         readfile(my_config.server_url, my_config.log_file);
         cout << "chunk size: " << my_config.chunkSize << ", server url: " << my_config.server_url << endl;
+    }
+
+    void func(int *param)
+    {
+        cout << "hello " << ", temp: " << *param << endl;
+        *param = 12;
+    }
+
+    bool dup(const string &input)
+    {
+        unordered_map<char, int> map;
+        for (int i = 0; i < input.size(); ++i)
+        {
+            map[input[i]]++;
+            if (map[input[i]] > 1)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     *  Write an algorithm that will return true if input string is a mirror of itself, false otherwise
+     *  Eg: abba = true
+     *      abcb = false
+     *  Option 1. -> ab ba -> ab ab -> a-a=0 b-b=0 if !0, then it's not mirror string
+     *  Option 2. -> two ptrs, if ptrs pointing to same char -> good, else, not a mirror string
+     */
+    bool isMirrorString(const string &input)
+    {
+        if (input.empty())
+        {
+            return false;
+        }
+        // odd check, catch odd sized strings that cannot be mirrors
+        if (input.size() % 2 != 0)
+        {
+            return false;
+        }
+        // even, handle with two pointers
+        for (int i = 0; i < input.size(); ++i)
+        {
+            if (i > input.size() / 2)
+            {
+                return true;
+            }
+            char l = input[i];
+            char r = input[input.size() - 1 - i];
+            if (l != r)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    TEST(AlgorithmTest, MirrorStringTest)
+    {
+        int o = 10;
+        int *temp = &o; // set to NULL to trigger seg fault on cout
+        func(temp);
+        assert(*temp == 12);
+
+        assert(dup("abba")); // abba = true, abc = false
+        assert(!dup("abc"));
+
+        assert(!isMirrorString("abcb"));
+        assert(!isMirrorString(""));
+        assert(isMirrorString("abba"));
+        assert(isMirrorString("ABBA"));
+        assert(!isMirrorString("192837"));
+        assert(!isMirrorString("1111111"));
+        assert(isMirrorString("11"));
     }
 }
 // Add more tests as needed
