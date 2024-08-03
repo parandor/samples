@@ -26,6 +26,12 @@ Get the token, follow self-hosted runner instructions below.
 ./docker/docker_build <TOKEN> github.actions.runner.ubuntu-22.04
 ```
 
+### Container Start Command
+The following command may need to be added in the right place in order to start the container:
+```
+/etc/init.d/boot-script start
+```
+
 ## Go
 
 Go development tutorial can be found [here](https://code.visualstudio.com/docs/languages/go)
