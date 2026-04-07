@@ -22,8 +22,12 @@ There is a Dockerfile that creates a full install of all dependencies for a self
 To install the self-hosted runner, a TOKEN parameter needs tobe supplied, which provides authentication.
 Get the token, follow self-hosted runner instructions below.
 ```
-./docker/docker_build <TOKEN> <REPO_TAG>
-./docker/docker_build <TOKEN> github.runner.<user>.<project>.ubuntu-22.04
+./docker/docker_build <TOKEN> <REPO_TAG> <REPO_URL>
+./docker/docker_build <TOKEN> github.runner.<user>.<project>.ubuntu-22.04 https://github.com/<user>/<project>
+```
+PowerShell (Windows) sample:
+```powershell
+wsl bash -lc 'cd /mnt/c/Users/<user>/Projects/samples && bash ./docker/docker_build "<TOKEN>" "github.runner.<user>.<project>.ubuntu-22.04" "https://github.com/<user>/<project>"'
 ```
 
 ### Container Start Command

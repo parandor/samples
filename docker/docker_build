@@ -1,8 +1,9 @@
+#!/usr/bin/env bash
 # $1 is the token
 # $2 is the repo tag
 # $3 is the repo URL of your repository
 if [ "$#" -ne 3 ]; then
-    echo "Error: Exactly 3 parameters are required. "
+    echo "Error: Exactly 3 parameters are required."
     exit 1
 fi
 RUNNER_NAME=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 8)
