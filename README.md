@@ -23,7 +23,7 @@ To install the self-hosted runner, a TOKEN parameter needs tobe supplied, which 
 Get the token, follow self-hosted runner instructions below.
 ```
 ./docker/docker_build <TOKEN> <REPO_TAG>
-./docker/docker_build <TOKEN> github.actions.runner.ubuntu-22.04
+./docker/docker_build <TOKEN> github.runner.<user>.<project>.ubuntu-22.04
 ```
 
 ### Container Start Command
