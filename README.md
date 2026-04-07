@@ -29,6 +29,10 @@ PowerShell (Windows) sample:
 ```powershell
 wsl bash -lc 'cd /mnt/c/Users/<user>/Projects/samples && bash ./docker/docker_build "<TOKEN>" "github.runner.<user>.<project>.ubuntu-22.04" "https://github.com/<user>/<project>"'
 ```
+PowerShell (Windows) sample to create a container filesystem tar (not an image tar):
+```powershell
+docker create --name tmp_export parandorenko/repo:github.runner.<user>.<project>.ubuntu-22.04.<random> ; docker export tmp_export -o github.runner.<user>.<project>.ubuntu-22.04.<random>.tar ; docker rm tmp_export
+```
 
 ### Container Start Command
 The following command may need to be added in the right place in order to start the container:

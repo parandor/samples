@@ -33,9 +33,11 @@ RUN mkdir actions-runner && cd actions-runner && \
     tar xzf ./actions-runner-linux-x64-2.312.0.tar.gz && \
     ./config.sh --name $RUNNER_NAME --url $REPO_URL --token $TOKEN
 
-COPY scripts/init.d/* /etc/init.d/
-
 USER root
+
+COPY scripts/init.d/* /etc/init.d/
+RUN sed -i 's/\r$//' /etc/init.d/boot-script /etc/init.d/actions.runner.service.template && \
+    chmod +x /etc/init.d/boot-script
 
 # Specify the default command to run on container start
 CMD ["/bin/bash", "-c", "/etc/init.d/boot-script start"]
