@@ -34,11 +34,18 @@ PowerShell (Windows) sample to create a container filesystem tar (not an image t
 docker create --name tmp_export parandorenko/repo:github.runner.<user>.<project>.ubuntu-22.04.<random> ; docker export tmp_export -o github.runner.<user>.<project>.ubuntu-22.04.<random>.tar ; docker rm tmp_export
 ```
 
-### Container Start Command
-The following command may need to be added in the right place in order to start the container:
+### Container Runtime Setup
+Use the following startup command:
 ```
 /etc/init.d/boot-script start
 ```
+
+Docker mode (host socket):
+1. Mount host Docker socket into the container:
+```
+/var/run/docker.sock:/var/run/docker.sock
+```
+4. Start with `/etc/init.d/boot-script start`.
 
 ## Go
 
