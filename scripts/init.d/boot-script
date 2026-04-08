@@ -10,12 +10,32 @@
 ### END INIT INFO
 
 start() {
+    mkdir -p /var/log
+
+    if ! pgrep -x dockerd >/dev/null 2>&1; then
+        nohup dockerd >/var/log/dockerd.log 2>&1 &
+    fi
+
+    for i in $(seq 1 30); do
+        if docker info >/dev/null 2>&1; then
+            break
+        fi
+        sleep 1
+    done
+
+    if ! docker info >/dev/null 2>&1; then
+        echo "Docker daemon failed to start. Last 50 lines from /var/log/dockerd.log:"
+        tail -n 50 /var/log/dockerd.log
+        exit 1
+    fi
+
     cd /home/peter/actions-runner
     ./bin/runsvc.sh /etc/init.d/actions.runner.service.template
 }
 
 stop() {
-    pkill -f "my-custom-service-runner"
+    pkill -f "runsvc.sh|Runner.Listener|actions-runner" || true
+    pkill -x dockerd || true
     echo "Service stopped"
 }
 
